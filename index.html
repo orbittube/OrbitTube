@@ -2,11 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 OrbitTube — видео без границ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚀 OrbitTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== ПЕРЕМЕННЫЕ ===== */
+        /* ===== ВСЕ СТИЛИ (ПОЛНАЯ ВЕРСИЯ) ===== */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -19,7 +19,6 @@
             --accent: #00d4ff;
             --shadow: rgba(0, 0, 0, 0.5);
             --sidebar-width: 240px;
-            --sidebar-collapsed: 72px;
             --header-height: 56px;
             --radius: 12px;
             --transition: 0.3s ease;
@@ -64,6 +63,7 @@
             transition: background var(--transition), color var(--transition);
             overflow: hidden;
             height: 100vh;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* ===== ШАПКА ===== */
@@ -71,7 +71,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 12px;
             height: var(--header-height);
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
@@ -79,11 +79,11 @@
             top: 0;
             z-index: 1000;
             transition: background var(--transition), border var(--transition);
-            gap: 16px;
+            gap: 8px;
             flex-shrink: 0;
         }
 
-        .header-left { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+        .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .menu-btn {
             background: none;
             border: none;
@@ -103,25 +103,31 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 20px;
+            gap: 6px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--accent);
             cursor: pointer;
         }
-        .logo i { font-size: 24px; }
+        .logo i { font-size: 20px; }
         .logo span {
             background: linear-gradient(135deg, var(--accent), #7b2ffc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header-center { flex: 1; max-width: 640px; min-width: 120px; display: flex; align-items: center; }
+        .header-center {
+            flex: 1;
+            max-width: 400px;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+        }
         .search-box {
             display: flex;
             width: 100%;
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: 40px;
+            border-radius: 20px;
             overflow: hidden;
             transition: border 0.3s, box-shadow 0.3s;
         }
@@ -131,21 +137,21 @@
         }
         .search-box input {
             flex: 1;
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: transparent;
             border: none;
             outline: none;
             color: var(--text-primary);
-            font-size: 15px;
-            min-width: 50px;
+            font-size: 14px;
+            min-width: 40px;
         }
-        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input::placeholder { color: var(--text-muted); font-size: 13px; }
         .search-box button {
             background: var(--bg-hover);
             border: none;
-            padding: 8px 20px;
+            padding: 6px 12px;
             color: var(--text-secondary);
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -153,20 +159,20 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             flex-shrink: 0;
         }
         .header-right button {
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             border-radius: 50%;
             transition: background 0.2s;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -174,15 +180,15 @@
         }
         .header-right button:hover { background: var(--bg-hover); }
         .header-right .avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             color: #000;
             cursor: pointer;
             transition: opacity 0.2s;
@@ -200,24 +206,24 @@
             border-right: 1px solid var(--border-color);
             overflow-y: auto;
             overflow-x: hidden;
-            transition: width var(--transition), background var(--transition), border var(--transition);
+            transition: transform var(--transition), background var(--transition), border var(--transition);
             z-index: 999;
             padding: 8px 0;
             flex-shrink: 0;
+            transform: translateX(-100%);
         }
-        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
         .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed); }
-        .sidebar.collapsed .sidebar-item span { display: none; }
-        .sidebar.collapsed .sidebar-item { justify-content: center; padding: 12px; }
-        .sidebar.collapsed .sidebar-divider-text { display: none; }
-        .sidebar.collapsed .sidebar-section-title { display: none; }
+
         .sidebar-item {
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 8px 24px;
+            padding: 8px 16px;
             color: var(--text-secondary);
             font-size: 14px;
             cursor: pointer;
@@ -240,30 +246,43 @@
         .sidebar-divider { height: 1px; background: var(--border-color); margin: 8px 12px; }
         .sidebar-divider-text {
             color: var(--text-muted);
-            font-size: 12px;
-            padding: 8px 24px;
+            font-size: 11px;
+            padding: 8px 16px;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* ===== ОСНОВНОЙ КОНТЕНТ (С ПРОЛИСТЫВАНИЕМ!) ===== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
         .main-content {
-            margin-left: var(--sidebar-width);
+            margin-left: 0;
             margin-top: var(--header-height);
-            padding: 24px 24px 40px;
+            padding: 12px 12px 60px;
             height: calc(100vh - var(--header-height));
             overflow-y: auto;
             transition: margin-left var(--transition), padding var(--transition);
             background: var(--bg-primary);
         }
-        .main-content.expanded { margin-left: var(--sidebar-collapsed); }
 
         /* ===== ВИДЕО СЕТКА ===== */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px 16px;
+            grid-template-columns: 1fr;
+            gap: 16px;
         }
 
         .video-card {
@@ -298,20 +317,20 @@
             bottom: 8px;
             right: 8px;
             background: rgba(0, 0, 0, 0.85);
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             color: #fff;
             font-weight: 500;
         }
         .video-info {
-            padding: 12px 14px;
+            padding: 10px 12px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
         .video-channel-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             flex-shrink: 0;
             background: var(--accent);
@@ -319,7 +338,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: #000;
             cursor: pointer;
         }
@@ -332,10 +351,10 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .video-channel-name {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             cursor: pointer;
         }
@@ -344,7 +363,7 @@
             text-decoration: underline;
         }
         .video-meta {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             display: flex;
             gap: 4px;
@@ -352,227 +371,108 @@
             flex-wrap: wrap;
         }
 
-        /* ===== ПЛЕЕР ===== */
-        .player-page {
+        /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+        .bottom-nav {
             display: none;
             position: fixed;
-            top: var(--header-height);
+            bottom: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: var(--bg-primary);
-            z-index: 100;
-            padding: 16px 24px;
-            overflow-y: auto;
-        }
-        .player-page.active { display: block; }
-        .player-layout {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 24px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .player-left { min-width: 0; }
-        .player-video-wrapper {
-            position: relative;
-            background: #000;
-            border-radius: var(--radius);
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            width: 100%;
-        }
-        .player-video-wrapper video { width: 100%; height: 100%; display: block; }
-        .player-info { padding: 16px 0; }
-        .player-title {
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-        .player-channel-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .player-channel-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .player-channel-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-            color: #000;
-            cursor: pointer;
-        }
-        .player-channel-name {
-            font-weight: 500;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        .player-channel-name:hover {
-            color: var(--accent);
-            text-decoration: underline;
-        }
-        .player-channel-subscribers { font-size: 13px; color: var(--text-secondary); }
-        .player-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .player-actions button {
-            background: var(--bg-hover);
-            border: none;
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .player-actions button:hover { background: var(--border-color); }
-        .player-actions button.liked { color: var(--accent); }
-        .player-actions button.subscribed { background: var(--accent); color: #000; }
-        .player-description {
+            height: 54px;
             background: var(--bg-secondary);
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            margin-top: 12px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            white-space: pre-wrap;
-            border: 1px solid var(--border-color);
-        }
-
-        /* ===== РЕКОМЕНДАЦИИ ===== */
-        .player-right {
-            max-height: calc(100vh - var(--header-height) - 40px);
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-        .player-right::-webkit-scrollbar { width: 6px; }
-        .player-right::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        .recommended-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-        }
-        .recommended-item {
-            display: flex;
-            gap: 12px;
-            padding: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 8px;
-        }
-        .recommended-item:hover { background: var(--bg-hover); }
-        .recommended-thumbnail {
-            flex-shrink: 0;
-            width: 168px;
-            aspect-ratio: 16/9;
-            background: var(--bg-hover);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 0 8px;
+            justify-content: space-around;
             align-items: center;
-            justify-content: center;
         }
-        .recommended-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-        .recommended-info { flex: 1; min-width: 0; }
-        .recommended-title-text {
-            font-size: 14px;
-            font-weight: 500;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 4px;
+        .bottom-nav.active {
+            display: flex;
         }
-        .recommended-channel { font-size: 13px; color: var(--text-secondary); }
-        .recommended-meta { font-size: 13px; color: var(--text-secondary); }
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: color 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 12px;
+        }
+        .bottom-nav button i { font-size: 20px; }
+        .bottom-nav button.active { color: var(--accent); }
+        .bottom-nav button:hover { background: var(--bg-hover); }
 
         /* ===== НАСТРОЙКИ ===== */
         .settings-panel {
             position: fixed;
             top: var(--header-height);
-            right: -420px;
-            width: 400px;
+            right: -100%;
+            width: 100%;
             height: calc(100vh - var(--header-height));
             background: var(--bg-secondary);
             border-left: 1px solid var(--border-color);
-            transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 1001;
-            padding: 24px;
+            padding: 16px;
             overflow-y: auto;
         }
         .settings-panel.open { right: 0; }
         .settings-panel h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 18px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .settings-panel h2 i { color: var(--accent); }
-        .settings-group { margin-bottom: 24px; }
+        .settings-group { margin-bottom: 16px; }
         .settings-group label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .theme-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
         .theme-btn {
-            padding: 10px 8px;
+            padding: 8px 4px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             background: var(--bg-primary);
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 13px;
+            font-size: 12px;
             text-align: center;
         }
         .theme-btn:hover { border-color: var(--text-secondary); }
         .theme-btn.active { border-color: var(--accent); background: var(--bg-hover); }
-        .theme-btn i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .theme-btn i { display: block; font-size: 18px; margin-bottom: 2px; }
         .bg-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
         .bg-btn {
-            padding: 8px;
+            padding: 6px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-primary);
             background: var(--bg-primary);
         }
@@ -580,27 +480,27 @@
         .bg-btn.active { border-color: var(--accent); }
         .bg-btn .color-preview {
             width: 100%;
-            height: 30px;
+            height: 24px;
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             border: 1px solid var(--border-color);
         }
         .settings-close {
             position: absolute;
-            top: 16px;
-            right: 16px;
+            top: 12px;
+            right: 12px;
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
         }
         .toggle-switch {
             position: relative;
-            width: 44px;
-            height: 24px;
+            width: 40px;
+            height: 20px;
             background: var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: background 0.3s;
             display: inline-block;
@@ -612,8 +512,8 @@
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             background: #fff;
             border-radius: 50%;
             transition: transform 0.3s;
@@ -623,126 +523,110 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 6px 0;
         }
+        .settings-row span { font-size: 13px; }
 
-        /* ===== ПОДВАЛ ===== */
         .footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 16px 20px;
             border-top: 1px solid var(--border-color);
             color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 40px;
+            font-size: 12px;
+            margin-top: 20px;
         }
-        .footer a { color: var(--accent); }
-
-        /* ===== АДАПТИВ ===== */
-        @media (max-width: 1024px) {
-            .player-layout { grid-template-columns: 1fr; }
-            .player-right {
-                max-height: none;
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 12px;
-            }
-            .recommended-item { flex-direction: column; }
-            .recommended-thumbnail { width: 100%; }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            grid-column: 1/-1;
         }
-        @media (max-width: 768px) {
-            .sidebar { width: var(--sidebar-collapsed); }
-            .sidebar .sidebar-item span { display: none; }
-            .sidebar .sidebar-item { justify-content: center; padding: 12px; }
-            .sidebar .sidebar-divider-text { display: none; }
-            .main-content { margin-left: var(--sidebar-collapsed); padding: 16px; }
-            .header-center { order: 3; flex: 1 1 100%; max-width: 100%; }
-            .header { padding: 8px 12px; flex-wrap: wrap; height: auto; min-height: var(--header-height); }
-            .header-left { flex: 1; }
-            .header-right { flex: 1; justify-content: flex-end; }
-            .video-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
-            .settings-panel { width: 100%; right: -100%; }
-            .player-page { padding: 12px; }
-            .player-channel-row { flex-direction: column; align-items: flex-start; }
-            .player-actions { width: 100%; justify-content: flex-start; }
-        }
-        @media (max-width: 480px) {
-            .video-grid { grid-template-columns: 1fr; }
-            .main-content { padding: 12px; }
-            .player-title { font-size: 17px; }
-        }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; color: var(--text-muted); }
+        .empty-state h3 { color: var(--text-primary); margin-bottom: 4px; font-size: 18px; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .video-card, .recommended-item { animation: fadeIn 0.3s ease; }
+        .video-card { animation: fadeIn 0.3s ease; }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        /* ===== АДАПТИВ ===== */
+        @media (min-width: 768px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            .bottom-nav { display: none !important; }
+            .main-content { padding-bottom: 24px; }
+            .sidebar {
+                transform: translateX(0);
+                width: var(--sidebar-width);
+            }
+            .sidebar.collapsed {
+                transform: translateX(0);
+                width: var(--sidebar-collapsed);
+            }
+            .sidebar.collapsed .sidebar-item span { display: none; }
+            .sidebar.collapsed .sidebar-item { justify-content: center; padding: 12px; }
+            .sidebar.collapsed .sidebar-divider-text { display: none; }
+            .sidebar.collapsed .sidebar-section-title { display: none; }
+            .main-content {
+                margin-left: var(--sidebar-width);
+                padding: 16px 20px 40px;
+            }
+            .main-content.expanded { margin-left: var(--sidebar-collapsed); }
+            .sidebar-overlay { display: none !important; }
+            .bottom-nav { display: none !important; }
+            .settings-panel {
+                width: 380px;
+                right: -420px;
+            }
+            .settings-panel.open { right: 0; }
+        }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-            grid-column: 1/-1;
+        @media (min-width: 1024px) {
+            .video-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
         }
-        .empty-state i { font-size: 48px; margin-bottom: 20px; display: block; color: var(--text-muted); }
-        .empty-state h3 { color: var(--text-primary); margin-bottom: 8px; }
 
-        .back-to-home {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 14px;
-            cursor: pointer;
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.2s;
-            margin-bottom: 12px;
+        @media (min-width: 1400px) {
+            .video-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
         }
-        .back-to-home:hover { color: var(--text-primary); }
 
-        .channel-header {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
+        @media (max-width: 767px) {
+            .bottom-nav {
+                display: flex !important;
+                background: var(--bg-secondary);
+            }
+            .main-content {
+                padding-bottom: 70px;
+            }
+            .header-center { max-width: 200px; }
+            .logo { font-size: 16px; }
+            .logo i { font-size: 18px; }
+            .search-box input { font-size: 12px; padding: 4px 8px; }
+            .search-box button { padding: 4px 8px; font-size: 12px; }
+            .header-right button { width: 32px; height: 32px; font-size: 16px; }
+            .header-right .avatar { width: 24px; height: 24px; font-size: 10px; }
+            .menu-btn { font-size: 18px; width: 36px; height: 36px; padding: 6px; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+            .settings-panel { width: 100%; right: -100%; }
+            .settings-panel.open { right: 0; }
         }
-        .channel-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            font-weight: 700;
-            color: #000;
+
+        @media (max-width: 480px) {
+            .video-grid { gap: 12px; }
+            .video-title { font-size: 13px; }
+            .video-info { padding: 8px 10px; gap: 8px; }
+            .video-channel-avatar { width: 28px; height: 28px; font-size: 11px; }
         }
-        .channel-name { font-size: 28px; font-weight: 600; }
-        .channel-subscribe-btn {
-            background: var(--accent);
-            border: none;
-            color: #000;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .channel-subscribe-btn.subscribed {
-            background: var(--border-color);
-            color: var(--text-secondary);
-        }
-        .channel-subscribe-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -764,6 +648,9 @@
             <div class="avatar" id="avatarBtn">O</div>
         </div>
     </header>
+
+    <!-- ===== ОВЕРЛЕЙ ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- ===== БОКОВОЕ МЕНЮ ===== -->
     <nav class="sidebar" id="sidebar">
@@ -787,52 +674,14 @@
         <div class="video-grid" id="videoGrid"></div>
         <div class="footer">
             <p>🚀 OrbitTube — видео, которое нельзя заблокировать</p>
-            <p>📡 Видео хранятся на GitHub · Ссылки постоянные</p>
+            <p>📡 Видео хранятся на GitHub</p>
         </div>
     </main>
-
-    <!-- ===== ПЛЕЕР ===== -->
-    <div class="player-page" id="playerPage">
-        <div class="player-layout">
-            <div class="player-left">
-                <button class="back-to-home" id="backToHome"><i class="fas fa-arrow-left"></i> На главную</button>
-                <div class="player-video-wrapper">
-                    <video id="playerVideo" controls></video>
-                </div>
-                <div class="player-info">
-                    <div class="player-title" id="playerTitle">Название видео</div>
-                    <div class="player-channel-row">
-                        <div class="player-channel-info">
-                            <div class="player-channel-avatar" id="playerChannelAvatar">O</div>
-                            <div>
-                                <div class="player-channel-name" id="playerChannelName">Канал</div>
-                                <div class="player-channel-subscribers" id="playerSubscribers">0 подписчиков</div>
-                            </div>
-                        </div>
-                        <div class="player-actions">
-                            <button id="playerLike"><i class="fas fa-thumbs-up"></i> <span id="likeCount">0</span></button>
-                            <button id="playerDislike"><i class="fas fa-thumbs-down"></i> <span id="dislikeCount">0</span></button>
-                            <button id="playerWatchLater"><i class="fas fa-clock"></i> <span id="watchLaterText">Смотреть позже</span></button>
-                            <button id="playerShare"><i class="fas fa-share"></i> Поделиться</button>
-                            <button id="playerSubscribe" class="channel-subscribe-btn"><i class="fas fa-plus"></i> Подписаться</button>
-                        </div>
-                    </div>
-                    <div class="player-description" id="playerDescription">Описание загружается...</div>
-                </div>
-            </div>
-
-            <div class="player-right">
-                <div class="recommended-title">Рекомендуемые видео</div>
-                <div id="recommendedList"></div>
-            </div>
-        </div>
-    </div>
 
     <!-- ===== НАСТРОЙКИ ===== -->
     <div class="settings-panel" id="settingsPanel">
         <button class="settings-close" id="settingsClose"><i class="fas fa-times"></i></button>
         <h2><i class="fas fa-cog"></i> Настройки</h2>
-
         <div class="settings-group">
             <label>🎨 Тема</label>
             <div class="theme-options">
@@ -841,7 +690,6 @@
                 <button class="theme-btn" data-theme="cosmic"><i class="fas fa-rocket"></i>Космос</button>
             </div>
         </div>
-
         <div class="settings-group">
             <label>🎨 Цвет фона</label>
             <div class="bg-options">
@@ -852,23 +700,19 @@
                 <button class="bg-btn" data-bg="purple"><div class="color-preview" style="background:#1a0a2e;"></div>Фиолетовый</button>
             </div>
         </div>
-
-        <div class="settings-group">
-            <label>📱 Интерфейс</label>
-            <div class="settings-row"><span>Авто-сворачивание меню</span><div class="toggle-switch" id="autoCollapseToggle"></div></div>
-            <div class="settings-row"><span>Автозапуск видео</span><div class="toggle-switch active" id="autoPlayToggle"></div></div>
-        </div>
-
-        <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:16px;">
+        <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:12px;">
             <label>ℹ️ О проекте</label>
-            <p style="color:var(--text-secondary);font-size:13px;line-height:1.6;">
-                <strong>OrbitTube</strong> — свободная видеоплатформа, работающая в обход блокировок.
-                Видео хранятся на GitHub.
-            </p>
-            <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">
-                Версия 4.1 · Сделано с ❤️
-            </p>
+            <p style="color:var(--text-secondary);font-size:12px;line-height:1.5;"><strong>OrbitTube</strong> — свободная платформа.</p>
+            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Версия 5.0 · Сделано с ❤️</p>
         </div>
+    </div>
+
+    <!-- ===== НИЖНЯЯ НАВИГАЦИЯ ===== -->
+    <div class="bottom-nav" id="bottomNav">
+        <button class="active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
+        <button data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></button>
+        <button data-page="watch_later"><i class="fas fa-clock"></i><span>Закладки</span></button>
+        <button data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></button>
     </div>
 
     <!-- ===== JAVASCRIPT ===== -->
@@ -877,9 +721,6 @@
         let allVideos = [];
         let currentVideos = [];
         let currentPage = 'home';
-        let currentVideoData = null;
-        let currentVideoIndex = -1;
-        let currentChannelName = null;
 
         let likedVideos = JSON.parse(localStorage.getItem('orbittube_liked') || '[]');
         let watchLater = JSON.parse(localStorage.getItem('orbittube_watchlater') || '[]');
@@ -895,7 +736,7 @@
                 allVideos = data.videos || [];
                 allVideos.forEach((v, i) => {
                     v.views = v.views || Math.floor(Math.random() * 100000) + 100;
-                    v.duration = v.duration || `${Math.floor(Math.random()*20)+1}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`;
+                    v.duration = v.duration || '10:00';
                     v.channel = v.channel || 'Неизвестный канал';
                     v.thumbnail = v.thumbnail || '';
                     v.description = v.description || 'Описание отсутствует';
@@ -910,8 +751,8 @@
             }
         }
 
-        // ===== РЕНДЕР СТРАНИЦЫ =====
-        function renderPage(page, channelName) {
+        // ===== РЕНДЕР =====
+        function renderPage(page) {
             currentPage = page;
             let videos = [];
 
@@ -923,42 +764,20 @@
                 case 'history': videos = allVideos.filter(v => history.includes(v.id)); break;
                 case 'watch_later': videos = allVideos.filter(v => watchLater.includes(v.id)); break;
                 case 'liked': videos = allVideos.filter(v => likedVideos.includes(v.id)); break;
-                case 'channel':
-                    currentChannelName = channelName;
-                    videos = allVideos.filter(v => v.channel === channelName);
-                    break;
                 default: videos = allVideos;
             }
 
             currentVideos = videos;
-            renderVideos(videos, page, channelName);
-            document.getElementById('playerPage').classList.remove('active');
-            document.getElementById('mainContent').style.display = 'block';
+            renderVideos(videos, page);
             updateSubscriptionsSidebar();
+            updateBottomNav();
         }
 
-        function renderVideos(videos, page, channelName) {
+        function renderVideos(videos, page) {
             const grid = document.getElementById('videoGrid');
             if (!videos || videos.length === 0) {
                 grid.innerHTML = `<div class="empty-state"><i class="fas fa-video-slash"></i><h3>Здесь пока пусто</h3><p>В этой категории нет видео</p></div>`;
                 return;
-            }
-
-            let channelHeader = '';
-            if (page === 'channel' && channelName) {
-                const isSubscribed = subscriptions.includes(channelName);
-                channelHeader = `
-                    <div class="channel-header" style="grid-column:1/-1;">
-                        <div class="channel-avatar">${channelName.charAt(0).toUpperCase()}</div>
-                        <div>
-                            <div class="channel-name">${channelName}</div>
-                            <div style="color:var(--text-secondary);">${videos.length} видео</div>
-                        </div>
-                        <button class="channel-subscribe-btn ${isSubscribed ? 'subscribed' : ''}" onclick="toggleSubscribe('${channelName}')">
-                            ${isSubscribed ? '<i class="fas fa-check"></i> Подписан' : '<i class="fas fa-plus"></i> Подписаться'}
-                        </button>
-                    </div>
-                `;
             }
 
             const cards = videos.map((video, index) => {
@@ -966,18 +785,18 @@
                 const isWatchLater = watchLater.includes(video.id);
                 const hasThumbnail = video.thumbnail && video.thumbnail.startsWith('http');
                 return `
-                    <div class="video-card" onclick="openPlayer(${index})">
+                    <div class="video-card" onclick="openVideo(${video.id})">
                         <div class="video-thumbnail">
                             ${hasThumbnail ?
-                                `<img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);\\'><i class=\\'fas fa-rocket\\' style=\\'font-size:48px;\\'></i><span style=\\'margin-top:8px;font-weight:bold;font-size:18px;\\'>OrbitTube</span></div>'">` :
+                                `<img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);\\'><i class=\\'fas fa-rocket\\' style=\\'font-size:32px;\\'></i><span style=\\'margin-top:4px;font-weight:bold;font-size:14px;\\'>OrbitTube</span></div>'">` :
                                 `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);">
-                                    <i class="fas fa-rocket" style="font-size:48px;"></i>
-                                    <span style="margin-top:8px;font-weight:bold;font-size:18px;">OrbitTube</span>
+                                    <i class="fas fa-rocket" style="font-size:32px;"></i>
+                                    <span style="margin-top:4px;font-weight:bold;font-size:14px;">OrbitTube</span>
                                  </div>`
                             }
                             <span class="duration">${video.duration || '10:00'}</span>
-                            ${isLiked ? '<span style="position:absolute;top:8px;right:8px;background:var(--accent);color:#000;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:bold;"><i class="fas fa-thumbs-up"></i></span>' : ''}
-                            ${isWatchLater ? '<span style="position:absolute;top:8px;left:8px;background:#ffaa44;color:#000;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:bold;"><i class="fas fa-clock"></i></span>' : ''}
+                            ${isLiked ? '<span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#000;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:bold;"><i class="fas fa-thumbs-up"></i></span>' : ''}
+                            ${isWatchLater ? '<span style="position:absolute;top:6px;left:6px;background:#ffaa44;color:#000;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:bold;"><i class="fas fa-clock"></i></span>' : ''}
                         </div>
                         <div class="video-info">
                             <div class="video-channel-avatar" onclick="event.stopPropagation(); openChannel('${video.channel}')">${(video.channel || 'O')[0].toUpperCase()}</div>
@@ -991,9 +810,9 @@
                 `;
             }).join('');
 
-            grid.innerHTML = channelHeader + cards;
+            grid.innerHTML = cards;
 
-            document.querySelectorAll('.sidebar-item').forEach(el => {
+            document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
                 el.classList.toggle('active', el.dataset.page === page);
             });
         }
@@ -1002,6 +821,11 @@
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num.toString();
+        }
+
+        // ===== ОТКРЫТЬ ВИДЕО =====
+        function openVideo(videoId) {
+            window.location.href = `video.html?v=${videoId}`;
         }
 
         // ===== ПОДПИСКИ =====
@@ -1014,14 +838,20 @@
             }
             localStorage.setItem('orbittube_subscriptions', JSON.stringify(subscriptions));
             updateSubscriptionsSidebar();
-            if (currentPage === 'channel' && currentChannelName === channelName) {
-                renderPage('channel', channelName);
+            if (currentPage === 'subscriptions') {
+                renderPage('subscriptions');
             }
-            const subBtn = document.getElementById('playerSubscribe');
-            if (subBtn) {
-                const isSub = subscriptions.includes(channelName);
-                subBtn.textContent = isSub ? 'Подписан' : 'Подписаться';
-                subBtn.className = 'channel-subscribe-btn' + (isSub ? ' subscribed' : '');
+        }
+
+        function openChannel(channelName) {
+            if (!channelName) return;
+            // Временно просто показываем все видео, фильтруем
+            const filtered = allVideos.filter(v => v.channel === channelName);
+            if (filtered.length > 0) {
+                currentVideos = filtered;
+                renderVideos(filtered, 'channel');
+                document.getElementById('searchInput').value = '';
+                closeSidebar();
             }
         }
 
@@ -1029,22 +859,14 @@
             const container = document.getElementById('subscriptionsList');
             if (!container) return;
             if (subscriptions.length === 0) {
-                container.innerHTML = `<div style="padding:8px 24px;color:var(--text-muted);font-size:13px;">Нет подписок</div>`;
+                container.innerHTML = `<div style="padding:8px 16px;color:var(--text-muted);font-size:12px;">Нет подписок</div>`;
                 return;
             }
             container.innerHTML = subscriptions.map(ch => `
-                <div class="sidebar-item" data-channel="${ch}" onclick="openChannel('${ch}')">
+                <div class="sidebar-item" onclick="openChannel('${ch}')">
                     <i class="fas fa-user"></i><span>${ch}</span>
                 </div>
             `).join('');
-        }
-
-        // ===== ОТКРЫТЬ КАНАЛ =====
-        function openChannel(channelName) {
-            if (!channelName) return;
-            closePlayer();
-            renderPage('channel', channelName);
-            document.getElementById('searchInput').value = '';
         }
 
         // ===== ПОИСК =====
@@ -1056,121 +878,30 @@
             renderVideos(filtered, 'search');
         }
 
-        // ===== ПЛЕЕР =====
-        function openPlayer(index) {
-            const video = currentVideos[index];
-            if (!video) return;
-            currentVideoData = video;
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('playerPage').classList.add('active');
-
-            document.getElementById('playerTitle').textContent = video.title || 'Без названия';
-            document.getElementById('playerChannelName').textContent = video.channel || 'OrbitTube';
-            document.getElementById('playerChannelAvatar').textContent = (video.channel || 'O')[0].toUpperCase();
-            document.getElementById('playerSubscribers').textContent = formatViews(video.subscribers || 0) + ' подписчиков';
-            document.getElementById('playerDescription').textContent = video.description || 'Описание отсутствует';
-
-            const player = document.getElementById('playerVideo');
-            player.src = video.temp_url || video.videoUrl || 'https://www.w3schools.com/html/mov_bbb.mp4';
-            player.load();
-
-            const isLiked = likedVideos.includes(video.id);
-            document.getElementById('playerLike').classList.toggle('liked', isLiked);
-            document.getElementById('likeCount').textContent = (video.views || 0) % 1000;
-
-            const isWatchLater = watchLater.includes(video.id);
-            document.getElementById('watchLaterText').textContent = isWatchLater ? 'В сохранённых' : 'Смотреть позже';
-
-            const subBtn = document.getElementById('playerSubscribe');
-            const isSub = subscriptions.includes(video.channel);
-            subBtn.textContent = isSub ? 'Подписан' : 'Подписаться';
-            subBtn.className = 'channel-subscribe-btn' + (isSub ? ' subscribed' : '');
-            subBtn.onclick = function() { toggleSubscribe(video.channel); };
-
-            renderRecommendations(video.id);
-
-            if (!history.includes(video.id)) {
-                history.push(video.id);
-                localStorage.setItem('orbittube_history', JSON.stringify(history));
-            }
-
-            const autoPlay = document.getElementById('autoPlayToggle').classList.contains('active');
-            if (autoPlay) player.play().catch(() => {});
+        // ===== МЕНЮ =====
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.toggle('open');
+            overlay.classList.toggle('active', isOpen);
         }
 
-        function renderRecommendations(currentId) {
-            const list = document.getElementById('recommendedList');
-            const recommended = allVideos
-                .filter(v => v.id !== currentId)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 10);
-            if (recommended.length === 0) {
-                list.innerHTML = '<div class="empty-state"><h3>Нет рекомендаций</h3></div>';
-                return;
-            }
-            list.innerHTML = recommended.map(v => `
-                <div class="recommended-item" onclick="openPlayerByRecommended(${v.id})">
-                    <div class="recommended-thumbnail">
-                        <i class="fas fa-play-circle" style="font-size:32px;color:var(--text-muted);"></i>
-                    </div>
-                    <div class="recommended-info">
-                        <div class="recommended-title-text">${v.title || 'Без названия'}</div>
-                        <div class="recommended-channel">${v.channel || 'OrbitTube'}</div>
-                        <div class="recommended-meta">${formatViews(v.views || 0)} просмотров</div>
-                    </div>
-                </div>
-            `).join('');
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
         }
 
-        function openPlayerByRecommended(id) {
-            const index = allVideos.findIndex(v => v.id === id);
-            if (index !== -1) {
-                currentVideos = allVideos;
-                openPlayer(index);
-            }
-        }
-
-        function closePlayer() {
-            document.getElementById('playerPage').classList.remove('active');
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('playerVideo').pause();
-        }
-
-        // ===== КНОПКИ ПЛЕЕРА =====
-        function toggleLike() {
-            if (!currentVideoData) return;
-            const id = currentVideoData.id;
-            const index = likedVideos.indexOf(id);
-            if (index > -1) { likedVideos.splice(index, 1); } else { likedVideos.push(id); }
-            localStorage.setItem('orbittube_liked', JSON.stringify(likedVideos));
-            const isLiked = likedVideos.includes(id);
-            document.getElementById('playerLike').classList.toggle('liked', isLiked);
-        }
-
-        function toggleDislike() { alert('👎 Дизлайк поставлен! (демо)'); }
-
-        function toggleWatchLater() {
-            if (!currentVideoData) return;
-            const id = currentVideoData.id;
-            const index = watchLater.indexOf(id);
-            if (index > -1) { watchLater.splice(index, 1); } else { watchLater.push(id); }
-            localStorage.setItem('orbittube_watchlater', JSON.stringify(watchLater));
-            const isWatchLater = watchLater.includes(id);
-            document.getElementById('watchLaterText').textContent = isWatchLater ? 'В сохранённых' : 'Смотреть позже';
-        }
-
-        function shareVideo() {
-            if (!currentVideoData) return;
-            const url = window.location.href;
-            if (navigator.share) {
-                navigator.share({ title: currentVideoData.title, text: `Смотрите "${currentVideoData.title}" на OrbitTube!`, url: url }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(url).then(() => alert('🔗 Ссылка скопирована!')).catch(() => prompt('Скопируйте ссылку:', url));
-            }
+        // ===== НИЖНЯЯ НАВИГАЦИЯ =====
+        function updateBottomNav() {
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === currentPage);
+            });
         }
 
         // ===== НАСТРОЙКИ =====
-        function openSettings() { document.getElementById('settingsPanel').classList.add('open'); }
+        function openSettings() { document.getElementById('settingsPanel').classList.add('open'); closeSidebar(); }
         function closeSettings() { document.getElementById('settingsPanel').classList.remove('open'); }
 
         function setTheme(theme) {
@@ -1192,23 +923,19 @@
             setBg(bg);
         }
 
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        // ===== ОБРАБОТЧИКИ =====
         document.addEventListener('DOMContentLoaded', function() {
             loadSettings();
             loadVideos();
 
-            document.getElementById('menuToggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('collapsed');
-                document.getElementById('mainContent').classList.toggle('expanded');
-            });
+            document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
             document.getElementById('logoHome').addEventListener('click', function() {
                 document.getElementById('searchInput').value = '';
-                closePlayer();
+                closeSidebar();
                 renderPage('home');
             });
-
-            document.getElementById('backToHome').addEventListener('click', closePlayer);
 
             document.getElementById('searchBtn').addEventListener('click', searchVideos);
             document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') searchVideos(); });
@@ -1216,23 +943,21 @@
             document.getElementById('settingsBtn').addEventListener('click', openSettings);
             document.getElementById('settingsClose').addEventListener('click', closeSettings);
 
-            document.querySelectorAll('.sidebar-item[data-page]').forEach(item => {
+            document.querySelectorAll('.sidebar-item[data-page], .bottom-nav button[data-page]').forEach(item => {
                 item.addEventListener('click', function() {
                     const page = this.dataset.page;
-                    if (page === 'settings') { openSettings(); return; }
-                    closePlayer();
+                    if (page === 'settings') { openSettings(); closeSidebar(); return; }
+                    closeSidebar();
                     renderPage(page);
                     document.getElementById('searchInput').value = '';
                 });
             });
 
-            document.getElementById('playerLike').addEventListener('click', toggleLike);
-            document.getElementById('playerDislike').addEventListener('click', toggleDislike);
-            document.getElementById('playerWatchLater').addEventListener('click', toggleWatchLater);
-            document.getElementById('playerShare').addEventListener('click', shareVideo);
-
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closePlayer();
+                if (e.key === 'Escape') {
+                    closeSettings();
+                    closeSidebar();
+                }
             });
 
             document.querySelectorAll('.theme-btn').forEach(btn => {
@@ -1247,21 +972,11 @@
                 toggle.addEventListener('click', function() { this.classList.toggle('active'); });
             });
 
-            document.getElementById('autoCollapseToggle').addEventListener('click', function() {
-                if (this.classList.contains('active')) {
-                    document.getElementById('sidebar').classList.add('collapsed');
-                    document.getElementById('mainContent').classList.add('expanded');
-                } else {
-                    document.getElementById('sidebar').classList.remove('collapsed');
-                    document.getElementById('mainContent').classList.remove('expanded');
-                }
-            });
-
             document.getElementById('avatarBtn').addEventListener('click', openSettings);
 
             setInterval(loadVideos, 2 * 60 * 1000);
 
-            console.log('🚀 OrbitTube v4.1 загружен!');
+            console.log('🚀 OrbitTube v5.0 загружен!');
         });
     </script>
 </body>
