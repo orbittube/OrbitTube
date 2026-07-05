@@ -6,7 +6,7 @@
     <title>🚀 OrbitTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== ВСЕ СТИЛИ (ПОЛНАЯ ВЕРСИЯ) ===== */
+        /* ===== ВСЕ СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) ===== */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -19,6 +19,7 @@
             --accent: #00d4ff;
             --shadow: rgba(0, 0, 0, 0.5);
             --sidebar-width: 240px;
+            --sidebar-collapsed: 0px;
             --header-height: 56px;
             --radius: 12px;
             --transition: 0.3s ease;
@@ -66,7 +67,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ===== ШАПКА ===== */
         .header {
             display: flex;
             align-items: center;
@@ -156,6 +156,7 @@
             transition: background 0.2s;
         }
         .search-box button:hover { background: var(--border-color); }
+
         .header-right {
             display: flex;
             align-items: center;
@@ -179,21 +180,6 @@
             position: relative;
         }
         .header-right button:hover { background: var(--bg-hover); }
-        .header-right .avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 12px;
-            color: #000;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .header-right .avatar:hover { opacity: 0.8; }
 
         /* ===== БОКОВОЕ МЕНЮ ===== */
         .sidebar {
@@ -212,9 +198,8 @@
             flex-shrink: 0;
             transform: translateX(-100%);
         }
-        .sidebar.open {
-            transform: translateX(0);
-        }
+        .sidebar.open { transform: translateX(0); }
+
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
         .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -263,9 +248,7 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 998;
         }
-        .sidebar-overlay.active {
-            display: block;
-        }
+        .sidebar-overlay.active { display: block; }
 
         /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
         .main-content {
@@ -307,11 +290,7 @@
             align-items: center;
             justify-content: center;
         }
-        .video-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
         .video-thumbnail .duration {
             position: absolute;
             bottom: 8px;
@@ -329,8 +308,8 @@
             gap: 10px;
         }
         .video-channel-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             flex-shrink: 0;
             background: var(--accent);
@@ -338,9 +317,12 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             color: #000;
             cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
         .video-details { flex: 1; min-width: 0; }
         .video-title {
@@ -358,10 +340,7 @@
             color: var(--text-secondary);
             cursor: pointer;
         }
-        .video-channel-name:hover {
-            color: var(--accent);
-            text-decoration: underline;
-        }
+        .video-channel-name:hover { color: var(--accent); text-decoration: underline; }
         .video-meta {
             font-size: 12px;
             color: var(--text-secondary);
@@ -369,6 +348,105 @@
             gap: 4px;
             align-items: center;
             flex-wrap: wrap;
+        }
+        .video-views {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== СТРАНИЦА КАНАЛА ===== */
+        .channel-header {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .channel-avatar-big {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .channel-info h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .channel-info .subs {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .channel-subscribe-btn {
+            background: var(--accent);
+            border: none;
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        .channel-subscribe-btn.subscribed {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+        .channel-subscribe-btn:hover { transform: scale(1.05); }
+        .channel-verified-badge {
+            color: #00d4ff;
+            font-size: 18px;
+        }
+        .back-to-home {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+        .back-to-home:hover { color: var(--text-primary); }
+
+        .channel-videos-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .verified-badge-small {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 14px;
+            height: 14px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #fff;
+            border: 2px solid var(--bg-secondary);
         }
 
         /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
@@ -386,9 +464,7 @@
             justify-content: space-around;
             align-items: center;
         }
-        .bottom-nav.active {
-            display: flex;
-        }
+        .bottom-nav.active { display: flex; }
         .bottom-nav button {
             background: none;
             border: none;
@@ -408,71 +484,84 @@
         .bottom-nav button.active { color: var(--accent); }
         .bottom-nav button:hover { background: var(--bg-hover); }
 
+        .footer {
+            text-align: center;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
         /* ===== НАСТРОЙКИ ===== */
         .settings-panel {
             position: fixed;
             top: var(--header-height);
-            right: -100%;
-            width: 100%;
+            right: -420px;
+            width: 400px;
             height: calc(100vh - var(--header-height));
             background: var(--bg-secondary);
             border-left: 1px solid var(--border-color);
-            transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 1001;
-            padding: 16px;
+            padding: 24px;
             overflow-y: auto;
         }
         .settings-panel.open { right: 0; }
+
         .settings-panel h2 {
-            font-size: 18px;
-            margin-bottom: 16px;
+            font-size: 20px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .settings-panel h2 i { color: var(--accent); }
-        .settings-group { margin-bottom: 16px; }
+
+        .settings-group { margin-bottom: 24px; }
         .settings-group label {
             display: block;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .theme-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
         .theme-btn {
-            padding: 8px 4px;
+            padding: 10px 8px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             background: var(--bg-primary);
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
         }
         .theme-btn:hover { border-color: var(--text-secondary); }
         .theme-btn.active { border-color: var(--accent); background: var(--bg-hover); }
-        .theme-btn i { display: block; font-size: 18px; margin-bottom: 2px; }
+        .theme-btn i { display: block; font-size: 20px; margin-bottom: 4px; }
+
         .bg-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
         .bg-btn {
-            padding: 6px;
+            padding: 8px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-primary);
             background: var(--bg-primary);
         }
@@ -480,27 +569,29 @@
         .bg-btn.active { border-color: var(--accent); }
         .bg-btn .color-preview {
             width: 100%;
-            height: 24px;
+            height: 30px;
             border-radius: 4px;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             border: 1px solid var(--border-color);
         }
+
         .settings-close {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 16px;
+            right: 16px;
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
         }
+
         .toggle-switch {
             position: relative;
-            width: 40px;
-            height: 20px;
+            width: 44px;
+            height: 24px;
             background: var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: background 0.3s;
             display: inline-block;
@@ -512,47 +603,25 @@
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             background: #fff;
             border-radius: 50%;
             transition: transform 0.3s;
         }
         .toggle-switch.active::after { transform: translateX(20px); }
+
         .settings-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 0;
+            padding: 8px 0;
         }
-        .settings-row span { font-size: 13px; }
-
-        .footer {
-            text-align: center;
-            padding: 16px 20px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-top: 20px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-            grid-column: 1/-1;
-        }
-        .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; color: var(--text-muted); }
-        .empty-state h3 { color: var(--text-primary); margin-bottom: 4px; font-size: 18px; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .video-card { animation: fadeIn 0.3s ease; }
 
         /* ===== АДАПТИВ ===== */
         @media (min-width: 768px) {
             .video-grid {
+                display: grid !important;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 16px;
             }
@@ -599,26 +668,26 @@
         }
 
         @media (max-width: 767px) {
-            .bottom-nav {
-                display: flex !important;
-                background: var(--bg-secondary);
-            }
-            .main-content {
-                padding-bottom: 70px;
-            }
+            .bottom-nav { display: flex !important; }
+            .main-content { padding-bottom: 70px; }
             .header-center { max-width: 200px; }
             .logo { font-size: 16px; }
             .logo i { font-size: 18px; }
             .search-box input { font-size: 12px; padding: 4px 8px; }
             .search-box button { padding: 4px 8px; font-size: 12px; }
             .header-right button { width: 32px; height: 32px; font-size: 16px; }
-            .header-right .avatar { width: 24px; height: 24px; font-size: 10px; }
             .menu-btn { font-size: 18px; width: 36px; height: 36px; padding: 6px; }
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay.active { display: block; }
-            .settings-panel { width: 100%; right: -100%; }
+            .settings-panel {
+                width: 100%;
+                right: -100%;
+            }
             .settings-panel.open { right: 0; }
+            .channel-header { flex-direction: column; align-items: flex-start; }
+            .channel-info h1 { font-size: 20px; }
+            .channel-subscribe-btn { margin-left: 0; }
         }
 
         @media (max-width: 480px) {
@@ -626,7 +695,22 @@
             .video-title { font-size: 13px; }
             .video-info { padding: 8px 10px; gap: 8px; }
             .video-channel-avatar { width: 28px; height: 28px; font-size: 11px; }
+            .channel-avatar-big { width: 48px; height: 48px; font-size: 20px; }
+            .channel-info h1 { font-size: 17px; }
         }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            grid-column: 1/-1;
+        }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; color: var(--text-muted); }
+        .empty-state h3 { color: var(--text-primary); margin-bottom: 4px; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -645,7 +729,6 @@
         </div>
         <div class="header-right">
             <button id="settingsBtn"><i class="fas fa-cog"></i></button>
-            <div class="avatar" id="avatarBtn">O</div>
         </div>
     </header>
 
@@ -657,6 +740,7 @@
         <div class="sidebar-item active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
         <div class="sidebar-item" data-page="trending"><i class="fas fa-fire"></i><span>Тренды</span></div>
         <div class="sidebar-item" data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></div>
+        <div class="sidebar-item" data-page="channels"><i class="fas fa-list"></i><span>Все каналы</span></div>
         <div class="sidebar-divider"></div>
         <div class="sidebar-item" data-page="library"><i class="fas fa-book"></i><span>Библиотека</span></div>
         <div class="sidebar-item" data-page="history"><i class="fas fa-history"></i><span>История</span></div>
@@ -669,12 +753,15 @@
         <div class="sidebar-item" data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></div>
     </nav>
 
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <!-- ===== ГЛАВНАЯ ===== -->
     <main class="main-content" id="mainContent">
-        <div class="video-grid" id="videoGrid"></div>
+        <button class="back-to-home" id="backToHome" style="display:none;"><i class="fas fa-arrow-left"></i> На главную</button>
+        <div id="pageContent">
+            <!-- Сетка рендерится динамически скриптом -->
+        </div>
         <div class="footer">
-            <p>🚀 OrbitTube — видео, которое нельзя заблокировать</p>
-            <p>📡 Видео хранятся на GitHub</p>
+            <p>🚀 OrbitTube — видео без границ</p>
+            <p>📡 Видео хранятся в Telegram</p>
         </div>
     </main>
 
@@ -682,6 +769,7 @@
     <div class="settings-panel" id="settingsPanel">
         <button class="settings-close" id="settingsClose"><i class="fas fa-times"></i></button>
         <h2><i class="fas fa-cog"></i> Настройки</h2>
+
         <div class="settings-group">
             <label>🎨 Тема</label>
             <div class="theme-options">
@@ -690,6 +778,7 @@
                 <button class="theme-btn" data-theme="cosmic"><i class="fas fa-rocket"></i>Космос</button>
             </div>
         </div>
+
         <div class="settings-group">
             <label>🎨 Цвет фона</label>
             <div class="bg-options">
@@ -700,10 +789,28 @@
                 <button class="bg-btn" data-bg="purple"><div class="color-preview" style="background:#1a0a2e;"></div>Фиолетовый</button>
             </div>
         </div>
-        <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:12px;">
+
+        <div class="settings-group">
+            <label>📱 Интерфейс</label>
+            <div class="settings-row">
+                <span>Авто-сворачивание меню</span>
+                <div class="toggle-switch" id="autoCollapseToggle"></div>
+            </div>
+            <div class="settings-row">
+                <span>Автозапуск видео</span>
+                <div class="toggle-switch active" id="autoPlayToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:16px;">
             <label>ℹ️ О проекте</label>
-            <p style="color:var(--text-secondary);font-size:12px;line-height:1.5;"><strong>OrbitTube</strong> — свободная платформа.</p>
-            <p style="color:var(--text-muted);font-size:11px;margin-top:4px;">Версия 5.0 · Сделано с ❤️</p>
+            <p style="color:var(--text-secondary);font-size:13px;line-height:1.6;">
+                <strong>OrbitTube</strong> — свободная видеоплатформа, работающая в обход блокировок.
+                Видео хранятся в Telegram.
+            </p>
+            <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">
+                Версия 6.1 · Сделано с ❤️
+            </p>
         </div>
     </div>
 
@@ -711,79 +818,124 @@
     <div class="bottom-nav" id="bottomNav">
         <button class="active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></button>
-        <button data-page="watch_later"><i class="fas fa-clock"></i><span>Закладки</span></button>
+        <button data-page="channels"><i class="fas fa-list"></i><span>Каналы</span></button>
         <button data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></button>
     </div>
 
-    <!-- ===== JAVASCRIPT ===== -->
     <script>
         // ===== ПЕРЕМЕННЫЕ =====
         let allVideos = [];
         let currentVideos = [];
         let currentPage = 'home';
+        let currentChannel = null;
+        let userSubscriptions = [];
+        let userLiked = [];
+        let userWatchLater = [];
 
-        let likedVideos = JSON.parse(localStorage.getItem('orbittube_liked') || '[]');
-        let watchLater = JSON.parse(localStorage.getItem('orbittube_watchlater') || '[]');
-        let history = JSON.parse(localStorage.getItem('orbittube_history') || '[]');
-        let subscriptions = JSON.parse(localStorage.getItem('orbittube_subscriptions') || '[]');
+        const SERVER_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8080' 
+            : 'https://unruffled-unfrosted-name.ngrok-free.dev';
+
+        // ===== LOCALSTORAGE =====
+        function loadUserData() {
+            const saved = localStorage.getItem('orbittube_user');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    userSubscriptions = data.subscriptions || [];
+                    userLiked = data.liked_videos || [];
+                    userWatchLater = data.watch_later || [];
+                } catch (e) {}
+            }
+        }
+
+        function saveUserData() {
+            localStorage.setItem('orbittube_user', JSON.stringify({
+                subscriptions: userSubscriptions,
+                liked_videos: userLiked,
+                watch_later: userWatchLater
+            }));
+        }
 
         // ===== ЗАГРУЗКА ВИДЕО =====
         async function loadVideos() {
             try {
+                loadUserData();
                 const response = await fetch('https://raw.githubusercontent.com/reallyvisualsofficial-pixel/OrbitTube/refs/heads/main/video.raw?v=' + Date.now());
                 if (!response.ok) throw new Error('File not found');
                 const data = await response.json();
                 allVideos = data.videos || [];
-                allVideos.forEach((v, i) => {
-                    v.views = v.views || Math.floor(Math.random() * 100000) + 100;
-                    v.duration = v.duration || '10:00';
-                    v.channel = v.channel || 'Неизвестный канал';
-                    v.thumbnail = v.thumbnail || '';
-                    v.description = v.description || 'Описание отсутствует';
-                    v.subscribers = v.subscribers || Math.floor(Math.random() * 1000000) + 1000;
-                });
+                
+                for (let i = 0; i < allVideos.length; i++) {
+                    const v = allVideos[i];
+                    try {
+                        const channelRes = await fetch(`${SERVER_URL}/channel/${v.channel}`);
+                        if (channelRes.ok) {
+                            const channelData = await channelRes.json();
+                            v.subscribers = channelData.subscribers || 0;
+                            v.channel_verified = channelData.verified || false;
+                        }
+                    } catch (e) {}
+                }
+                
                 renderPage(currentPage);
                 updateSubscriptionsSidebar();
             } catch (e) {
-                console.warn('Ошибка загрузки video.raw:', e);
+                console.warn('Ошибка загрузки:', e);
                 allVideos = [];
                 renderPage(currentPage);
             }
         }
 
-        // ===== РЕНДЕР =====
-        function renderPage(page) {
+        // ===== РЕНДЕР СТРАНИЦ =====
+        function renderPage(page, channelName) {
             currentPage = page;
+            document.getElementById('backToHome').style.display = page === 'channel' ? 'flex' : 'none';
+            
+            if (page === 'channels') {
+                renderAllChannels();
+                return;
+            }
+            
+            if (page === 'channel' && channelName) {
+                renderChannelPage(channelName);
+                return;
+            }
+            
             let videos = [];
-
             switch (page) {
                 case 'home': videos = allVideos; break;
                 case 'trending': videos = [...allVideos].sort((a, b) => (b.views || 0) - (a.views || 0)); break;
-                case 'subscriptions': videos = allVideos.filter(v => subscriptions.includes(v.channel)); break;
-                case 'library': videos = allVideos.filter(v => history.includes(v.id)); break;
+                case 'subscriptions': videos = allVideos.filter(v => userSubscriptions.includes(v.channel)); break;
+                case 'library': videos = allVideos.filter(v => userLiked.includes(v.id) || userWatchLater.includes(v.id)); break;
                 case 'history': videos = allVideos.filter(v => history.includes(v.id)); break;
-                case 'watch_later': videos = allVideos.filter(v => watchLater.includes(v.id)); break;
-                case 'liked': videos = allVideos.filter(v => likedVideos.includes(v.id)); break;
+                case 'watch_later': videos = allVideos.filter(v => userWatchLater.includes(v.id)); break;
+                case 'liked': videos = allVideos.filter(v => userLiked.includes(v.id)); break;
                 default: videos = allVideos;
             }
 
             currentVideos = videos;
-            renderVideos(videos, page);
+            renderVideos(videos);
             updateSubscriptionsSidebar();
             updateBottomNav();
         }
 
-        function renderVideos(videos, page) {
-            const grid = document.getElementById('videoGrid');
+        function renderVideos(videos) {
+            const pageContent = document.getElementById('pageContent');
             if (!videos || videos.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-video-slash"></i><h3>Здесь пока пусто</h3><p>В этой категории нет видео</p></div>`;
+                pageContent.innerHTML = `<div class="video-grid"><div class="empty-state"><i class="fas fa-video-slash"></i><h3>Здесь пока пусто</h3><p>В этой категории нет видео</p></div></div>`;
                 return;
             }
 
             const cards = videos.map((video, index) => {
-                const isLiked = likedVideos.includes(video.id);
-                const isWatchLater = watchLater.includes(video.id);
+                const isLiked = userLiked.includes(video.id);
+                const isWatchLater = userWatchLater.includes(video.id);
                 const hasThumbnail = video.thumbnail && video.thumbnail.startsWith('http');
+                const subscribers = video.subscribers || 0;
+                const isVerified = video.channel_verified || false;
+                const views = video.views || 0;
+                const likes = video.likes || 0;
+                
                 return `
                     <div class="video-card" onclick="openVideo(${video.id})">
                         <div class="video-thumbnail">
@@ -799,21 +951,30 @@
                             ${isWatchLater ? '<span style="position:absolute;top:6px;left:6px;background:#ffaa44;color:#000;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:bold;"><i class="fas fa-clock"></i></span>' : ''}
                         </div>
                         <div class="video-info">
-                            <div class="video-channel-avatar" onclick="event.stopPropagation(); openChannel('${video.channel}')">${(video.channel || 'O')[0].toUpperCase()}</div>
+                            <div class="video-channel-avatar" onclick="event.stopPropagation(); openChannel('${video.channel}')">
+                                ${video.channel ? video.channel.charAt(0).toUpperCase() : 'O'}
+                                ${isVerified ? '<span class="verified-badge-small"><i class="fas fa-check"></i></span>' : ''}
+                            </div>
                             <div class="video-details">
                                 <div class="video-title">${video.title || 'Без названия'}</div>
-                                <div class="video-channel-name" onclick="event.stopPropagation(); openChannel('${video.channel}')">${video.channel || 'OrbitTube'}</div>
-                                <div class="video-meta"><span>${formatViews(video.views || 0)} просмотров</span></div>
+                                <div class="video-channel-name" onclick="event.stopPropagation(); openChannel('${video.channel}')">${video.channel || 'OrbitTube'} ${isVerified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:11px;"></i>' : ''}</div>
+                                <div class="video-meta">
+                                    <span>${formatViews(views)} просмотров</span>
+                                    <span>•</span>
+                                    <span>❤️ ${likes}</span>
+                                    <span>•</span>
+                                    <span>${formatViews(subscribers)} подписчиков</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            grid.innerHTML = cards;
+            pageContent.innerHTML = `<div class="video-grid">${cards}</div>`;
 
             document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
-                el.classList.toggle('active', el.dataset.page === page);
+                el.classList.toggle('active', el.dataset.page === currentPage);
             });
         }
 
@@ -823,50 +984,184 @@
             return num.toString();
         }
 
-        // ===== ОТКРЫТЬ ВИДЕО =====
-        function openVideo(videoId) {
-            window.location.href = `video.html?v=${videoId}`;
+        // ===== ВСЕ КАНАЛЫ =====
+        function renderAllChannels() {
+            const pageContent = document.getElementById('pageContent');
+            const channels = [];
+            const channelMap = {};
+            
+            allVideos.forEach(v => {
+                if (v.channel && !channelMap[v.channel]) {
+                    channelMap[v.channel] = {
+                        name: v.channel,
+                        subscribers: v.subscribers || 0,
+                        verified: v.channel_verified || false
+                    };
+                }
+            });
+            
+            const channelList = Object.values(channelMap).sort((a, b) => a.name.localeCompare(b.name));
+            
+            if (channelList.length === 0) {
+                pageContent.innerHTML = `<div class="video-grid"><div class="empty-state"><i class="fas fa-users"></i><h3>Нет каналов</h3><p>Видео ещё не добавлены</p></div></div>`;
+                return;
+            }
+
+            pageContent.innerHTML = `
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:18px;font-weight:600;margin-bottom:8px;">📺 Все каналы (${channelList.length})</div>
+                    <div style="font-size:13px;color:var(--text-secondary);">Нажмите на канал, чтобы посмотреть все его видео</div>
+                </div>
+                <div class="video-grid">
+                ${channelList.map(ch => `
+                    <div class="video-card" onclick="openChannel('${ch.name}')" style="padding:12px 16px;display:flex;align-items:center;gap:14px;">
+                        <div class="video-channel-avatar" style="width:48px;height:48px;font-size:20px;flex-shrink:0;">
+                            ${ch.name.charAt(0).toUpperCase()}
+                            ${ch.verified ? '<span class="verified-badge-small"><i class="fas fa-check"></i></span>' : ''}
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:16px;font-weight:500;">${ch.name} ${ch.verified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:14px;"></i>' : ''}</div>
+                            <div style="font-size:13px;color:var(--text-secondary);">${formatViews(ch.subscribers)} подписчиков</div>
+                        </div>
+                        <div style="color:var(--text-muted);"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                `).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
+                el.classList.toggle('active', el.dataset.page === currentPage);
+            });
+        }
+
+        // ===== СТРАНИЦА КАНАЛА (ПОФИКСЕННАЯ) =====
+        function renderChannelPage(channelName) {
+            const pageContent = document.getElementById('pageContent');
+            const videos = allVideos.filter(v => v.channel === channelName);
+            const channel = allVideos.find(v => v.channel === channelName);
+            const isSubscribed = userSubscriptions.includes(channelName);
+            const subscribers = channel ? channel.subscribers || 0 : 0;
+            const isVerified = channel ? channel.channel_verified || false : false;
+
+            if (videos.length === 0) {
+                pageContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user"></i>
+                        <h3>Канал "${channelName}"</h3>
+                        <p>На этом канале пока нет видео</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="channel-header">
+                    <div class="channel-avatar-big">
+                        ${channelName.charAt(0).toUpperCase()}
+                        ${isVerified ? '<span class="verified-badge-small"><i class="fas fa-check"></i></span>' : ''}
+                    </div>
+                    <div class="channel-info">
+                        <h1>${channelName} ${isVerified ? '<span class="channel-verified-badge"><i class="fas fa-check-circle"></i></span>' : ''}</h1>
+                        <div class="subs">${formatViews(subscribers)} подписчиков · ${videos.length} видео</div>
+                    </div>
+                    <button class="channel-subscribe-btn ${isSubscribed ? 'subscribed' : ''}" onclick="toggleSubscribeFromChannel('${channelName}')">
+                        ${isSubscribed ? '✅ Подписан' : '➕ Подписаться'}
+                    </button>
+                </div>
+                <div class="channel-videos-title">🎬 Все видео канала</div>
+                <div class="video-grid">
+            `;
+
+            videos.forEach(video => {
+                const isLiked = userLiked.includes(video.id);
+                const isWatchLater = userWatchLater.includes(video.id);
+                const hasThumbnail = video.thumbnail && video.thumbnail.startsWith('http');
+                const views = video.views || 0;
+                const likes = video.likes || 0;
+                
+                html += `
+                    <div class="video-card" onclick="openVideo(${video.id})">
+                        <div class="video-thumbnail">
+                            ${hasThumbnail ?
+                                `<img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-play-circle\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'">` :
+                                `<i class="fas fa-play-circle" style="font-size:48px;color:var(--text-muted);"></i>`
+                            }
+                            <span class="duration">${video.duration || '10:00'}</span>
+                            ${isLiked ? '<span style="position:absolute;top:6px;right:6px;background:var(--accent);color:#000;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:bold;"><i class="fas fa-thumbs-up"></i></span>' : ''}
+                            ${isWatchLater ? '<span style="position:absolute;top:6px;left:6px;background:#ffaa44;color:#000;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:bold;"><i class="fas fa-clock"></i></span>' : ''}
+                        </div>
+                        <div class="video-info">
+                            <div class="video-channel-avatar">
+                                ${video.channel ? video.channel.charAt(0).toUpperCase() : 'O'}
+                            </div>
+                            <div class="video-details">
+                                <div class="video-title">${video.title || 'Без названия'}</div>
+                                <div class="video-channel-name">${video.channel || 'OrbitTube'}</div>
+                                <div class="video-meta">
+                                    <span>${formatViews(views)} просмотров</span>
+                                    <span>•</span>
+                                    <span>❤️ ${likes}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            pageContent.innerHTML = html;
+            document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
+                el.classList.toggle('active', el.dataset.page === currentPage);
+            });
+        }
+
+        // ===== ОТКРЫТЬ КАНАЛ =====
+        function openChannel(channelName) {
+            if (!channelName) return;
+            currentChannel = channelName;
+            document.getElementById('backToHome').style.display = 'flex';
+            renderPage('channel', channelName);
+            closeSidebar();
+            updateBottomNav();
+        }
+
+        function toggleSubscribeFromChannel(channelName) {
+            toggleSubscribe(channelName);
+            if (currentPage === 'channel') {
+                renderChannelPage(channelName);
+            }
         }
 
         // ===== ПОДПИСКИ =====
         function toggleSubscribe(channelName) {
-            const index = subscriptions.indexOf(channelName);
-            if (index > -1) {
-                subscriptions.splice(index, 1);
+            const wasSubscribed = userSubscriptions.includes(channelName);
+            if (wasSubscribed) {
+                userSubscriptions = userSubscriptions.filter(ch => ch !== channelName);
             } else {
-                subscriptions.push(channelName);
+                userSubscriptions.push(channelName);
             }
-            localStorage.setItem('orbittube_subscriptions', JSON.stringify(subscriptions));
+            saveUserData();
             updateSubscriptionsSidebar();
-            if (currentPage === 'subscriptions') {
-                renderPage('subscriptions');
-            }
-        }
-
-        function openChannel(channelName) {
-            if (!channelName) return;
-            // Временно просто показываем все видео, фильтруем
-            const filtered = allVideos.filter(v => v.channel === channelName);
-            if (filtered.length > 0) {
-                currentVideos = filtered;
-                renderVideos(filtered, 'channel');
-                document.getElementById('searchInput').value = '';
-                closeSidebar();
-            }
+            loadVideos();
         }
 
         function updateSubscriptionsSidebar() {
             const container = document.getElementById('subscriptionsList');
             if (!container) return;
-            if (subscriptions.length === 0) {
+            if (userSubscriptions.length === 0) {
                 container.innerHTML = `<div style="padding:8px 16px;color:var(--text-muted);font-size:12px;">Нет подписок</div>`;
                 return;
             }
-            container.innerHTML = subscriptions.map(ch => `
+            container.innerHTML = userSubscriptions.map(ch => `
                 <div class="sidebar-item" onclick="openChannel('${ch}')">
                     <i class="fas fa-user"></i><span>${ch}</span>
                 </div>
             `).join('');
+        }
+
+        // ===== ОТКРЫТЬ ВИДЕО =====
+        function openVideo(videoId) {
+            window.location.href = `video.html?v=${videoId}`;
         }
 
         // ===== ПОИСК =====
@@ -875,7 +1170,7 @@
             if (!query) { renderPage(currentPage); return; }
             const filtered = allVideos.filter(v => v.title.toLowerCase().includes(query) || (v.channel && v.channel.toLowerCase().includes(query)));
             currentVideos = filtered;
-            renderVideos(filtered, 'search');
+            renderVideos(filtered);
         }
 
         // ===== МЕНЮ =====
@@ -887,22 +1182,19 @@
         }
 
         function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        }
-
-        // ===== НИЖНЯЯ НАВИГАЦИЯ =====
-        function updateBottomNav() {
-            document.querySelectorAll('.bottom-nav button').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.page === currentPage);
-            });
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
 
         // ===== НАСТРОЙКИ =====
-        function openSettings() { document.getElementById('settingsPanel').classList.add('open'); closeSidebar(); }
-        function closeSettings() { document.getElementById('settingsPanel').classList.remove('open'); }
+        function openSettings() { 
+            document.getElementById('settingsPanel').classList.add('open');
+            closeSidebar();
+        }
+
+        function closeSettings() { 
+            document.getElementById('settingsPanel').classList.remove('open');
+        }
 
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
@@ -923,7 +1215,14 @@
             setBg(bg);
         }
 
-        // ===== ОБРАБОТЧИКИ =====
+        // ===== НИЖНЯЯ НАВИГАЦИЯ =====
+        function updateBottomNav() {
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === currentPage);
+            });
+        }
+
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
         document.addEventListener('DOMContentLoaded', function() {
             loadSettings();
             loadVideos();
@@ -934,6 +1233,13 @@
             document.getElementById('logoHome').addEventListener('click', function() {
                 document.getElementById('searchInput').value = '';
                 closeSidebar();
+                document.getElementById('backToHome').style.display = 'none';
+                renderPage('home');
+            });
+
+            document.getElementById('backToHome').addEventListener('click', function() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('backToHome').style.display = 'none';
                 renderPage('home');
             });
 
@@ -948,16 +1254,10 @@
                     const page = this.dataset.page;
                     if (page === 'settings') { openSettings(); closeSidebar(); return; }
                     closeSidebar();
-                    renderPage(page);
                     document.getElementById('searchInput').value = '';
+                    document.getElementById('backToHome').style.display = 'none';
+                    renderPage(page);
                 });
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeSettings();
-                    closeSidebar();
-                }
             });
 
             document.querySelectorAll('.theme-btn').forEach(btn => {
@@ -972,11 +1272,25 @@
                 toggle.addEventListener('click', function() { this.classList.toggle('active'); });
             });
 
-            document.getElementById('avatarBtn').addEventListener('click', openSettings);
+            document.getElementById('autoCollapseToggle').addEventListener('click', function() {
+                if (this.classList.contains('active')) {
+                    document.getElementById('sidebar').classList.add('collapsed');
+                    document.getElementById('mainContent').classList.add('expanded');
+                } else {
+                    document.getElementById('sidebar').classList.remove('collapsed');
+                    document.getElementById('mainContent').classList.remove('expanded');
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSettings();
+                    closeSidebar();
+                }
+            });
 
             setInterval(loadVideos, 2 * 60 * 1000);
-
-            console.log('🚀 OrbitTube v5.0 загружен!');
+            console.log('🚀 OrbitTube v6.1 с каналами загружен!');
         });
     </script>
 </body>
