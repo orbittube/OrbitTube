@@ -856,18 +856,22 @@
                     } catch (e) {}
                 }
                 
-                renderPage(currentPage);
+                renderPage(currentPage, currentChannel);
                 updateSubscriptionsSidebar();
             } catch (e) {
                 console.warn('Ошибка загрузки:', e);
                 allVideos = [];
-                renderPage(currentPage);
+                renderPage(currentPage, currentChannel);
             }
         }
 
         function renderPage(page, channelName) {
             currentPage = page;
             document.getElementById('backToHome').style.display = page === 'channel' ? 'flex' : 'none';
+            
+            if (page !== 'channel' && page !== 'channels') {
+                document.getElementById('pageContent').innerHTML = '<div class="video-grid" id="videoGrid"></div>';
+            }
             
             if (page === 'channels') {
                 renderAllChannels();
@@ -899,6 +903,8 @@
 
         function renderVideos(videos) {
             const grid = document.getElementById('videoGrid');
+            if (!grid) return;
+            
             if (!videos || videos.length === 0) {
                 grid.innerHTML = `<div class="empty-state"><i class="fas fa-video-slash"></i><h3>Здесь пока пусто</h3><p>В этой категории нет видео</p></div>`;
                 return;
@@ -962,7 +968,7 @@
         }
 
         function renderAllChannels() {
-            const grid = document.getElementById('videoGrid');
+            const pageContent = document.getElementById('pageContent');
             const channels = [];
             const channelMap = {};
             
@@ -979,28 +985,30 @@
             const channelList = Object.values(channelMap).sort((a, b) => a.name.localeCompare(b.name));
             
             if (channelList.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>Нет каналов</h3><p>Видео ещё не добавлены</p></div>`;
+                pageContent.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>Нет каналов</h3><p>Видео ещё не добавлены</p></div>`;
                 return;
             }
 
-            grid.innerHTML = `
-                <div style="margin-bottom:16px;">
+            pageContent.innerHTML = `
+                <div style="margin-bottom:16px; padding: 0 4px;">
                     <div style="font-size:18px;font-weight:600;margin-bottom:8px;">📺 Все каналы (${channelList.length})</div>
                     <div style="font-size:13px;color:var(--text-secondary);">Нажмите на канал, чтобы посмотреть все его видео</div>
                 </div>
-                ${channelList.map(ch => `
-                    <div class="video-card" onclick="openChannel('${ch.name}')" style="padding:12px 16px;display:flex;align-items:center;gap:14px;">
-                        <div class="video-channel-avatar" style="width:48px;height:48px;font-size:20px;flex-shrink:0;">
-                            ${ch.name.charAt(0).toUpperCase()}
-                            ${ch.verified ? '<span class="verified-badge-small"><i class="fas fa-check"></i></span>' : ''}
+                <div class="video-grid" id="videoGrid">
+                    ${channelList.map(ch => `
+                        <div class="video-card" onclick="openChannel('${ch.name}')" style="padding:12px 16px;display:flex;align-items:center;gap:14px;grid-column: 1/-1;">
+                            <div class="video-channel-avatar" style="width:48px;height:48px;font-size:20px;flex-shrink:0;">
+                                ${ch.name.charAt(0).toUpperCase()}
+                                ${ch.verified ? '<span class="verified-badge-small"><i class="fas fa-check"></i></span>' : ''}
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:16px;font-weight:500;">${ch.name} ${ch.verified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:14px;"></i>' : ''}</div>
+                                <div style="font-size:13px;color:var(--text-secondary);">${formatViews(ch.subscribers)} подписчиков</div>
+                            </div>
+                            <div style="color:var(--text-muted);"><i class="fas fa-chevron-right"></i></div>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-size:16px;font-weight:500;">${ch.name} ${ch.verified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:14px;"></i>' : ''}</div>
-                            <div style="font-size:13px;color:var(--text-secondary);">${formatViews(ch.subscribers)} подписчиков</div>
-                        </div>
-                        <div style="color:var(--text-muted);"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                `).join('')}
+                    `).join('')}
+                </div>
             `;
 
             document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
@@ -1009,7 +1017,7 @@
         }
 
         function renderChannelPage(channelName) {
-            const grid = document.getElementById('videoGrid');
+            const pageContent = document.getElementById('pageContent');
             const videos = allVideos.filter(v => v.channel === channelName);
             const channel = allVideos.find(v => v.channel === channelName);
             const isSubscribed = userSubscriptions.includes(channelName);
@@ -1017,7 +1025,7 @@
             const isVerified = channel ? channel.channel_verified || false : false;
 
             if (videos.length === 0) {
-                grid.innerHTML = `
+                pageContent.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user"></i>
                         <h3>Канал "${channelName}"</h3>
@@ -1042,9 +1050,9 @@
                     </button>
                 </div>
                 <div class="channel-videos-title">🎬 Все видео канала</div>
+                <div class="video-grid" id="videoGrid">
             `;
 
-            html += `<div class="video-grid">`;
             videos.forEach(video => {
                 const isLiked = userLiked.includes(video.id);
                 const isWatchLater = userWatchLater.includes(video.id);
@@ -1082,7 +1090,7 @@
             });
             html += `</div>`;
 
-            grid.innerHTML = html;
+            pageContent.innerHTML = html;
             document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
                 el.classList.toggle('active', el.dataset.page === currentPage);
             });
@@ -1106,9 +1114,8 @@
             }
             saveUserData();
             updateSubscriptionsSidebar();
-            // ===== НЕ ПЕРЕЗАГРУЖАЕМ ВСЁ, А ПРОСТО ОБНОВЛЯЕМ СТРАНИЦУ КАНАЛА =====
             renderChannelPage(channelName);
-            // Обновляем кнопку подписки в шапке канала (на случай если она есть)
+            
             const subBtn = document.querySelector('.channel-subscribe-btn');
             if (subBtn) {
                 const isSub = userSubscriptions.includes(channelName);
@@ -1149,7 +1156,11 @@
 
         function searchVideos() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            if (!query) { renderPage(currentPage); return; }
+            if (!query) { renderPage(currentPage, currentChannel); return; }
+            
+            // Гарантируем чистую сетку перед выводом результатов поиска
+            document.getElementById('pageContent').innerHTML = '<div class="video-grid" id="videoGrid"></div>';
+            
             const filtered = allVideos.filter(v => v.title.toLowerCase().includes(query) || (v.channel && v.channel.toLowerCase().includes(query)));
             currentVideos = filtered;
             renderVideos(filtered);
@@ -1211,12 +1222,14 @@
             document.getElementById('logoHome').addEventListener('click', function() {
                 document.getElementById('searchInput').value = '';
                 closeSidebar();
+                currentChannel = null;
                 document.getElementById('backToHome').style.display = 'none';
                 renderPage('home');
             });
 
             document.getElementById('backToHome').addEventListener('click', function() {
                 document.getElementById('searchInput').value = '';
+                currentChannel = null;
                 document.getElementById('backToHome').style.display = 'none';
                 renderPage('home');
             });
@@ -1233,6 +1246,7 @@
                     if (page === 'settings') { openSettings(); closeSidebar(); return; }
                     closeSidebar();
                     document.getElementById('searchInput').value = '';
+                    currentChannel = null;
                     document.getElementById('backToHome').style.display = 'none';
                     renderPage(page);
                 });
@@ -1268,7 +1282,7 @@
             });
 
             setInterval(loadVideos, 2 * 60 * 1000);
-            console.log('🚀 OrbitTube v1.0 BETA!');
+            console.log('🚀 OrbitTube v6.1 загружен!');
         });
     </script>
 </body>
