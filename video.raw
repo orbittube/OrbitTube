@@ -1,6 +1,5 @@
 {
   "videos": [
-    
     {
       "id": 1,
       "title": "Реакция ЮТУБЕРОВ на ЛЕГАЛЬНЫЕ ЧИТЫ ReallyVIsuals +Домер",
@@ -12,7 +11,19 @@
       "original_url": "https://www.youtube.com/watch?v=9Q0PAg_2SvI",
       "added": "2026-07-06T23:11:19.810171",
       "filename": "Реакция_ЮТУБЕРОВ_на_ЛЕГАЛЬНЫЕ_.mp4"
+    },
+    {
+      "id": 2,
+      "title": "Новые СМЕШНЫЕ ВИДЕО / Сборник ВАЙНОВ / Юмор / Приколы / ПОРЖАТЬ 🤣",
+      "channel": "Натурал Альбертович",
+      "description": "",
+      "temp_url": "https://store-eu-par-5.gofile.io/download/web/989d84f2-c5b5-471c-82e3-52c0c3fd1627/videoplayback%20(1).mp4",
+      "duration": "20:33",
+      "expires": "2027-07-06T23:23:53.680603",
+      "original_url": "https://www.youtube.com/watch?v=6brawTD3pKc",
+      "added": "2026-07-06T23:23:53.680603",
+      "filename": "Новые_СМЕШНЫЕ_ВИДЕО___Сборник_.mp4"
     }
   ],
-  "last_update": "2026-07-06T23:11:19.810171"
+  "last_update": "2026-07-06T23:23:53.680603"
 }
