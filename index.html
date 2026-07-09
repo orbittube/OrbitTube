@@ -1143,6 +1143,16 @@
             }
         }
 
+        // ========== Перемешивание массива (Fisher-Yates) ==========
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
         function renderPage(page, channelName) {
             currentPage = page;
             document.getElementById('backToHome').style.display = page === 'channel' ? 'flex' : 'none';
@@ -1163,14 +1173,30 @@
             
             let videos = [];
             switch (page) {
-                case 'home': videos = allVideos; break;
-                case 'trending': videos = [...allVideos].sort((a, b) => (b.views || 0) - (a.views || 0)); break;
-                case 'subscriptions': videos = allVideos.filter(v => userSubscriptions.includes(v.channel)); break;
-                case 'library': videos = allVideos.filter(v => userLiked.includes(v.id) || userWatchLater.includes(v.id)); break;
-                case 'history': videos = allVideos.filter(v => history.includes(v.id)); break;
-                case 'watch_later': videos = allVideos.filter(v => userWatchLater.includes(v.id)); break;
-                case 'liked': videos = allVideos.filter(v => userLiked.includes(v.id)); break;
-                default: videos = allVideos;
+                case 'home': 
+                    // Главная страница — всегда в случайном порядке!
+                    videos = shuffleArray(allVideos);
+                    break;
+                case 'trending': 
+                    videos = [...allVideos].sort((a, b) => (b.views || 0) - (a.views || 0)); 
+                    break;
+                case 'subscriptions': 
+                    videos = shuffleArray(allVideos.filter(v => userSubscriptions.includes(v.channel))); 
+                    break;
+                case 'library': 
+                    videos = shuffleArray(allVideos.filter(v => userLiked.includes(v.id) || userWatchLater.includes(v.id))); 
+                    break;
+                case 'history': 
+                    videos = shuffleArray(allVideos.filter(v => history.includes(v.id))); 
+                    break;
+                case 'watch_later': 
+                    videos = shuffleArray(allVideos.filter(v => userWatchLater.includes(v.id))); 
+                    break;
+                case 'liked': 
+                    videos = shuffleArray(allVideos.filter(v => userLiked.includes(v.id))); 
+                    break;
+                default: 
+                    videos = shuffleArray(allVideos);
             }
 
             currentVideos = videos;
@@ -1574,7 +1600,7 @@
             });
 
             setInterval(loadVideos, 2 * 60 * 1000);
-            console.log('🚀 OrbitTube v1.0');
+            console.log('🚀 OrbitTube v1.0 загружен!');
         });
     </script>
 </body>
