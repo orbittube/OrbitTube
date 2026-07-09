@@ -251,7 +251,7 @@
         .main-content {
             margin-left: 0;
             margin-top: var(--header-height);
-            padding: 12px 12px 60px;
+            padding: 12px 12px 80px;
             height: calc(100vh - var(--header-height));
             overflow-y: auto;
             transition: margin-left var(--transition), padding var(--transition);
@@ -476,11 +476,13 @@
 
         .footer {
             text-align: center;
-            padding: 16px 20px;
+            padding: 20px 20px 30px;
             border-top: 1px solid var(--border-color);
             color: var(--text-muted);
             font-size: 12px;
-            margin-top: 20px;
+            margin-top: 24px;
+            clear: both;
+            width: 100%;
         }
 
         .settings-panel {
@@ -607,13 +609,31 @@
             padding: 8px 0;
         }
 
+        .lang-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+        .lang-btn:hover { border-color: var(--text-secondary); }
+        .lang-btn.active { border-color: var(--accent); background: var(--bg-hover); }
+
         @media (min-width: 768px) {
             .video-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 16px;
             }
             .bottom-nav { display: none !important; }
-            .main-content { padding-bottom: 24px; }
+            .main-content { padding-bottom: 40px; }
             .sidebar {
                 transform: translateX(0);
                 width: var(--sidebar-width);
@@ -656,7 +676,7 @@
 
         @media (max-width: 767px) {
             .bottom-nav { display: flex !important; }
-            .main-content { padding-bottom: 70px; }
+            .main-content { padding-bottom: 80px; }
             .header-center { max-width: 200px; }
             .logo { font-size: 16px; }
             .logo i { font-size: 18px; }
@@ -753,6 +773,15 @@
         <h2><i class="fas fa-cog"></i> Настройки</h2>
 
         <div class="settings-group">
+            <label>🌐 Язык</label>
+            <div class="lang-options">
+                <button class="lang-btn active" data-lang="ru">Русский</button>
+                <button class="lang-btn" data-lang="uk">Українська</button>
+                <button class="lang-btn" data-lang="en">English</button>
+            </div>
+        </div>
+
+        <div class="settings-group">
             <label>🎨 Тема</label>
             <div class="theme-options">
                 <button class="theme-btn active" data-theme="dark"><i class="fas fa-moon"></i>Тёмная</button>
@@ -787,11 +816,10 @@
         <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:16px;">
             <label>ℹ️ О проекте</label>
             <p style="color:var(--text-secondary);font-size:13px;line-height:1.6;">
-                <strong>OrbitTube</strong> — свободная видеоплатформа, работающая в обход блокировок.
-                Видео хранятся в Telegram.
+                <strong>OrbitTube</strong> — свободная видеоплатформа.
             </p>
             <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">
-                Версия 6.1 · Сделано с ❤️
+                Версия 1.0 · Сделано с ❤️
             </p>
         </div>
     </div>
@@ -804,6 +832,163 @@
     </div>
 
     <script>
+        // ========== Языковые ресурсы ==========
+        const LANG = {
+            ru: {
+                home: 'Главная',
+                trending: 'Тренды',
+                subscriptions: 'Подписки',
+                channels: 'Все каналы',
+                library: 'Библиотека',
+                history: 'История',
+                watch_later: 'Смотреть позже',
+                liked: 'Понравившиеся',
+                settings: 'Настройки',
+                search_placeholder: 'Поиск в OrbitTube',
+                back_home: 'На главную',
+                footer_line1: '🚀 OrbitTube — видео без границ',
+                footer_line2: '📡 telegram бот @OrbitTube_bot',
+                no_subscriptions: 'Нет подписок',
+                no_videos: 'Здесь пока пусто',
+                no_videos_desc: 'В этой категории нет видео',
+                no_channels: 'Нет каналов',
+                no_channels_desc: 'Видео ещё не добавлены',
+                all_channels: 'Все каналы',
+                channels_count: 'каналов',
+                subscribe: 'Подписаться',
+                subscribed: 'Подписан',
+                subscribers: 'подписчиков',
+                views: 'просмотров',
+                video: 'видео',
+                settings_title: 'Настройки',
+                lang_label: '🌐 Язык',
+                theme_label: '🎨 Тема',
+                bg_label: '🎨 Цвет фона',
+                interface_label: '📱 Интерфейс',
+                auto_collapse: 'Авто-сворачивание меню',
+                auto_play: 'Автозапуск видео',
+                about_label: 'ℹ️ О проекте',
+                about_text: 'свободная видеоплатформа.',
+                version: 'Версия 1.0 · Сделано с ❤️',
+                channel_videos: 'Все видео канала',
+                verified: 'верифицирован',
+                empty_channel: 'На этом канале пока нет видео',
+                all_channels_title: '📺 Все каналы',
+                all_channels_sub: 'Нажмите на канал, чтобы посмотреть все его видео',
+                dark: 'Тёмная',
+                light: 'Светлая',
+                cosmic: 'Космос',
+                bg_dark: 'Тёмный',
+                bg_darker: 'Чёрный',
+                bg_gray: 'Серый',
+                bg_blue: 'Синий',
+                bg_purple: 'Фиолетовый',
+            },
+            uk: {
+                home: 'Головна',
+                trending: 'Тренди',
+                subscriptions: 'Підписки',
+                channels: 'Всі канали',
+                library: 'Бібліотека',
+                history: 'Історія',
+                watch_later: 'Дивитись пізніше',
+                liked: 'Сподобалось',
+                settings: 'Налаштування',
+                search_placeholder: 'Пошук в OrbitTube',
+                back_home: 'На головну',
+                footer_line1: '🚀 OrbitTube — відео без кордонів',
+                footer_line2: '📡 telegram бот @OrbitTube_bot',
+                no_subscriptions: 'Немає підписок',
+                no_videos: 'Тут поки порожньо',
+                no_videos_desc: 'У цій категорії немає відео',
+                no_channels: 'Немає каналів',
+                no_channels_desc: 'Відео ще не додані',
+                all_channels: 'Всі канали',
+                channels_count: 'каналів',
+                subscribe: 'Підписатися',
+                subscribed: 'Підписаний',
+                subscribers: 'підписників',
+                views: 'переглядів',
+                video: 'відео',
+                settings_title: 'Налаштування',
+                lang_label: '🌐 Мова',
+                theme_label: '🎨 Тема',
+                bg_label: '🎨 Колір фону',
+                interface_label: '📱 Інтерфейс',
+                auto_collapse: 'Авто-згортання меню',
+                auto_play: 'Автозапуск відео',
+                about_label: 'ℹ️ Про проєкт',
+                about_text: 'вільна відеоплатформа.',
+                version: 'Версія 1.0 · Зроблено з ❤️',
+                channel_videos: 'Всі відео каналу',
+                verified: 'верифікований',
+                empty_channel: 'На цьому каналі поки немає відео',
+                all_channels_title: '📺 Всі канали',
+                all_channels_sub: 'Натисніть на канал, щоб подивитися всі його відео',
+                dark: 'Темна',
+                light: 'Світла',
+                cosmic: 'Космос',
+                bg_dark: 'Темний',
+                bg_darker: 'Чорний',
+                bg_gray: 'Сірий',
+                bg_blue: 'Синій',
+                bg_purple: 'Фіолетовий',
+            },
+            en: {
+                home: 'Home',
+                trending: 'Trending',
+                subscriptions: 'Subscriptions',
+                channels: 'All channels',
+                library: 'Library',
+                history: 'History',
+                watch_later: 'Watch later',
+                liked: 'Liked videos',
+                settings: 'Settings',
+                search_placeholder: 'Search OrbitTube',
+                back_home: 'Back to home',
+                footer_line1: '🚀 OrbitTube — video without borders',
+                footer_line2: '📡 telegram bot @OrbitTube_bot',
+                no_subscriptions: 'No subscriptions',
+                no_videos: 'Nothing here yet',
+                no_videos_desc: 'No videos in this category',
+                no_channels: 'No channels',
+                no_channels_desc: 'No videos added yet',
+                all_channels: 'All channels',
+                channels_count: 'channels',
+                subscribe: 'Subscribe',
+                subscribed: 'Subscribed',
+                subscribers: 'subscribers',
+                views: 'views',
+                video: 'video',
+                settings_title: 'Settings',
+                lang_label: '🌐 Language',
+                theme_label: '🎨 Theme',
+                bg_label: '🎨 Background color',
+                interface_label: '📱 Interface',
+                auto_collapse: 'Auto-collapse menu',
+                auto_play: 'Auto-play video',
+                about_label: 'ℹ️ About',
+                about_text: 'free video platform.',
+                version: 'Version 1.0 · Made with ❤️',
+                channel_videos: 'All channel videos',
+                verified: 'verified',
+                empty_channel: 'This channel has no videos yet',
+                all_channels_title: '📺 All channels',
+                all_channels_sub: 'Click on a channel to view all its videos',
+                dark: 'Dark',
+                light: 'Light',
+                cosmic: 'Cosmic',
+                bg_dark: 'Dark',
+                bg_darker: 'Black',
+                bg_gray: 'Gray',
+                bg_blue: 'Blue',
+                bg_purple: 'Purple',
+            }
+        };
+
+        let currentLang = localStorage.getItem('orbittube_lang') || 'ru';
+
+        // ========== Глобальные данные ==========
         let allVideos = [];
         let currentVideos = [];
         let currentPage = 'home';
@@ -816,6 +1001,99 @@
             ? 'http://localhost:8080' 
             : 'https://unruffled-unfrosted-name.ngrok-free.dev';
 
+        // ========== Функции перевода ==========
+        function t(key) {
+            const langData = LANG[currentLang] || LANG.ru;
+            return langData[key] || key;
+        }
+
+        function applyLanguage() {
+            document.title = '🚀 OrbitTube';
+            document.querySelector('.logo span').textContent = 'OrbitTube';
+            document.getElementById('searchInput').placeholder = t('search_placeholder');
+            
+            const sidebarItems = document.querySelectorAll('.sidebar-item[data-page]');
+            const pageMap = {
+                home: 'home',
+                trending: 'trending',
+                subscriptions: 'subscriptions',
+                channels: 'channels',
+                library: 'library',
+                history: 'history',
+                watch_later: 'watch_later',
+                liked: 'liked',
+                settings: 'settings'
+            };
+            sidebarItems.forEach(el => {
+                const page = el.dataset.page;
+                if (pageMap[page]) {
+                    const span = el.querySelector('span');
+                    if (span) span.textContent = t(pageMap[page]);
+                }
+            });
+            const subDivider = document.querySelector('.sidebar-divider-text');
+            if (subDivider) subDivider.textContent = t('subscriptions');
+            
+            const backBtn = document.getElementById('backToHome');
+            if (backBtn) backBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${t('back_home')}`;
+            
+            const footer = document.querySelector('.footer');
+            if (footer) {
+                footer.innerHTML = `
+                    <p>${t('footer_line1')}</p>
+                    <p>${t('footer_line2')}</p>
+                `;
+            }
+            
+            document.querySelector('#settingsPanel h2').innerHTML = `<i class="fas fa-cog"></i> ${t('settings_title')}`;
+            const settingsLabels = document.querySelectorAll('.settings-group label');
+            if (settingsLabels.length >= 5) {
+                settingsLabels[0].textContent = t('lang_label');
+                settingsLabels[1].textContent = t('theme_label');
+                settingsLabels[2].textContent = t('bg_label');
+                settingsLabels[3].textContent = t('interface_label');
+                settingsLabels[4].textContent = t('about_label');
+            }
+            const rows = document.querySelectorAll('.settings-row');
+            if (rows.length >= 2) {
+                const spans = rows[0].querySelectorAll('span');
+                if (spans[0]) spans[0].textContent = t('auto_collapse');
+                const spans2 = rows[1].querySelectorAll('span');
+                if (spans2[0]) spans2[0].textContent = t('auto_play');
+            }
+            const aboutP = document.querySelector('.settings-group p');
+            if (aboutP) {
+                aboutP.innerHTML = `<strong>OrbitTube</strong> — ${t('about_text')}`;
+            }
+            const versionP = document.querySelector('.settings-group p:last-child');
+            if (versionP && versionP.style.color === 'var(--text-muted)') {
+                versionP.textContent = t('version');
+            }
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                const theme = btn.dataset.theme;
+                const label = t(theme) || theme;
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    btn.innerHTML = `${icon.outerHTML} ${label}`;
+                }
+            });
+            document.querySelectorAll('.bg-btn').forEach(btn => {
+                const bg = btn.dataset.bg;
+                const label = t('bg_' + bg) || bg;
+                const preview = btn.querySelector('.color-preview');
+                if (preview) {
+                    btn.innerHTML = `${preview.outerHTML} ${label}`;
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            renderPage(currentPage, currentChannel);
+            updateSubscriptionsSidebar();
+            updateBottomNav();
+        }
+
+        // ========== Загрузка данных ==========
         function loadUserData() {
             const saved = localStorage.getItem('orbittube_user');
             if (saved) {
@@ -906,7 +1184,7 @@
             if (!grid) return;
             
             if (!videos || videos.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-video-slash"></i><h3>Здесь пока пусто</h3><p>В этой категории нет видео</p></div>`;
+                grid.innerHTML = `<div class="empty-state"><i class="fas fa-video-slash"></i><h3>${t('no_videos')}</h3><p>${t('no_videos_desc')}</p></div>`;
                 return;
             }
 
@@ -942,11 +1220,11 @@
                                 <div class="video-title">${video.title || 'Без названия'}</div>
                                 <div class="video-channel-name" onclick="event.stopPropagation(); openChannel('${video.channel}')">${video.channel || 'OrbitTube'} ${isVerified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:11px;"></i>' : ''}</div>
                                 <div class="video-meta">
-                                    <span>${formatViews(views)} просмотров</span>
+                                    <span>${formatViews(views)} ${t('views')}</span>
                                     <span>•</span>
                                     <span>❤️ ${likes}</span>
                                     <span>•</span>
-                                    <span>${formatViews(subscribers)} подписчиков</span>
+                                    <span>${formatViews(subscribers)} ${t('subscribers')}</span>
                                 </div>
                             </div>
                         </div>
@@ -985,14 +1263,14 @@
             const channelList = Object.values(channelMap).sort((a, b) => a.name.localeCompare(b.name));
             
             if (channelList.length === 0) {
-                pageContent.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>Нет каналов</h3><p>Видео ещё не добавлены</p></div>`;
+                pageContent.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><h3>${t('no_channels')}</h3><p>${t('no_channels_desc')}</p></div>`;
                 return;
             }
 
             pageContent.innerHTML = `
                 <div style="margin-bottom:16px; padding: 0 4px;">
-                    <div style="font-size:18px;font-weight:600;margin-bottom:8px;">📺 Все каналы (${channelList.length})</div>
-                    <div style="font-size:13px;color:var(--text-secondary);">Нажмите на канал, чтобы посмотреть все его видео</div>
+                    <div style="font-size:18px;font-weight:600;margin-bottom:8px;">${t('all_channels_title')} (${channelList.length})</div>
+                    <div style="font-size:13px;color:var(--text-secondary);">${t('all_channels_sub')}</div>
                 </div>
                 <div class="video-grid" id="videoGrid">
                     ${channelList.map(ch => `
@@ -1003,7 +1281,7 @@
                             </div>
                             <div style="flex:1;">
                                 <div style="font-size:16px;font-weight:500;">${ch.name} ${ch.verified ? '<i class="fas fa-check-circle" style="color:#00d4ff;font-size:14px;"></i>' : ''}</div>
-                                <div style="font-size:13px;color:var(--text-secondary);">${formatViews(ch.subscribers)} подписчиков</div>
+                                <div style="font-size:13px;color:var(--text-secondary);">${formatViews(ch.subscribers)} ${t('subscribers')}</div>
                             </div>
                             <div style="color:var(--text-muted);"><i class="fas fa-chevron-right"></i></div>
                         </div>
@@ -1028,8 +1306,8 @@
                 pageContent.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user"></i>
-                        <h3>Канал "${channelName}"</h3>
-                        <p>На этом канале пока нет видео</p>
+                        <h3>${channelName}</h3>
+                        <p>${t('empty_channel')}</p>
                     </div>
                 `;
                 return;
@@ -1043,13 +1321,13 @@
                     </div>
                     <div class="channel-info">
                         <h1>${channelName} ${isVerified ? '<span class="channel-verified-badge"><i class="fas fa-check-circle"></i></span>' : ''}</h1>
-                        <div class="subs">${formatViews(subscribers)} подписчиков · ${videos.length} видео</div>
+                        <div class="subs">${formatViews(subscribers)} ${t('subscribers')} · ${videos.length} ${t('video')}</div>
                     </div>
                     <button class="channel-subscribe-btn ${isSubscribed ? 'subscribed' : ''}" onclick="toggleSubscribeFromChannel('${channelName}')">
-                        ${isSubscribed ? '✅ Подписан' : '➕ Подписаться'}
+                        ${isSubscribed ? '✅ ' + t('subscribed') : '➕ ' + t('subscribe')}
                     </button>
                 </div>
-                <div class="channel-videos-title">🎬 Все видео канала</div>
+                <div class="channel-videos-title">🎬 ${t('channel_videos')}</div>
                 <div class="video-grid" id="videoGrid">
             `;
 
@@ -1079,7 +1357,7 @@
                                 <div class="video-title">${video.title || 'Без названия'}</div>
                                 <div class="video-channel-name" onclick="event.stopPropagation(); openChannel('${video.channel}')">${video.channel || 'OrbitTube'}</div>
                                 <div class="video-meta">
-                                    <span>${formatViews(views)} просмотров</span>
+                                    <span>${formatViews(views)} ${t('views')}</span>
                                     <span>•</span>
                                     <span>❤️ ${likes}</span>
                                 </div>
@@ -1120,7 +1398,7 @@
             if (subBtn) {
                 const isSub = userSubscriptions.includes(channelName);
                 subBtn.className = `channel-subscribe-btn ${isSub ? 'subscribed' : ''}`;
-                subBtn.textContent = isSub ? '✅ Подписан' : '➕ Подписаться';
+                subBtn.textContent = isSub ? '✅ ' + t('subscribed') : '➕ ' + t('subscribe');
             }
         }
 
@@ -1140,7 +1418,7 @@
             const container = document.getElementById('subscriptionsList');
             if (!container) return;
             if (userSubscriptions.length === 0) {
-                container.innerHTML = `<div style="padding:8px 16px;color:var(--text-muted);font-size:12px;">Нет подписок</div>`;
+                container.innerHTML = `<div style="padding:8px 16px;color:var(--text-muted);font-size:12px;">${t('no_subscriptions')}</div>`;
                 return;
             }
             container.innerHTML = userSubscriptions.map(ch => `
@@ -1158,7 +1436,6 @@
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             if (!query) { renderPage(currentPage, currentChannel); return; }
             
-            // Гарантируем чистую сетку перед выводом результатов поиска
             document.getElementById('pageContent').innerHTML = '<div class="video-grid" id="videoGrid"></div>';
             
             const filtered = allVideos.filter(v => v.title.toLowerCase().includes(query) || (v.channel && v.channel.toLowerCase().includes(query)));
@@ -1199,11 +1476,21 @@
             localStorage.setItem('orbittube_bg', bg);
         }
 
+        function setLang(lang) {
+            if (!LANG[lang]) return;
+            currentLang = lang;
+            localStorage.setItem('orbittube_lang', lang);
+            applyLanguage();
+        }
+
         function loadSettings() {
             const theme = localStorage.getItem('orbittube_theme') || 'dark';
             const bg = localStorage.getItem('orbittube_bg') || 'dark';
+            const lang = localStorage.getItem('orbittube_lang') || 'ru';
+            currentLang = lang;
             setTheme(theme);
             setBg(bg);
+            applyLanguage();
         }
 
         function updateBottomNav() {
@@ -1212,6 +1499,7 @@
             });
         }
 
+        // ========== Инициализация ==========
         document.addEventListener('DOMContentLoaded', function() {
             loadSettings();
             loadVideos();
@@ -1260,6 +1548,10 @@
                 btn.addEventListener('click', function() { setBg(this.dataset.bg); });
             });
 
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() { setLang(this.dataset.lang); });
+            });
+
             document.querySelectorAll('.toggle-switch').forEach(toggle => {
                 toggle.addEventListener('click', function() { this.classList.toggle('active'); });
             });
@@ -1282,7 +1574,7 @@
             });
 
             setInterval(loadVideos, 2 * 60 * 1000);
-            console.log('🚀 OrbitTube v6.1 загружен!');
+            console.log('🚀 OrbitTube v1.0');
         });
     </script>
 </body>
