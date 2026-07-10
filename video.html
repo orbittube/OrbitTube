@@ -407,6 +407,11 @@
             cursor: default;
         }
         .player-channel-subscribers-text { font-size: 13px; color: var(--text-secondary); }
+        .player-channel-date-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
         .player-actions {
             display: flex;
             gap: 8px;
@@ -593,6 +598,62 @@
     </div>
 
     <script>
+        // ========== Языковые ресурсы (синхронизированы с index.html) ==========
+        const LANG = {
+            ru: {
+                subscribers: 'подписчиков',
+                views: 'просмотров',
+                recommended: 'Рекомендуемые видео',
+                watch_later: 'Смотреть позже',
+                in_saved: 'В сохранённых',
+                subscribe: 'Подписаться',
+                subscribed: 'Подписан',
+                no_recommendations: 'Нет рекомендаций',
+                date_add: 'Добавлено',
+            },
+            uk: {
+                subscribers: 'підписників',
+                views: 'переглядів',
+                recommended: 'Рекомендовані відео',
+                watch_later: 'Дивитись пізніше',
+                in_saved: 'У збережених',
+                subscribe: 'Підписатися',
+                subscribed: 'Підписаний',
+                no_recommendations: 'Немає рекомендацій',
+                date_add: 'Додано',
+            },
+            en: {
+                subscribers: 'subscribers',
+                views: 'views',
+                recommended: 'Recommended videos',
+                watch_later: 'Watch later',
+                in_saved: 'Saved',
+                subscribe: 'Subscribe',
+                subscribed: 'Subscribed',
+                no_recommendations: 'No recommendations',
+                date_add: 'Added',
+            }
+        };
+
+        let currentLang = localStorage.getItem('orbittube_lang') || 'ru';
+
+        function t(key) {
+            const langData = LANG[currentLang] || LANG.ru;
+            return langData[key] || key;
+        }
+
+        function applyLanguage() {
+            // Обновляем все элементы с переводами
+            const recTitle = document.querySelector('.recommended-title');
+            if (recTitle) recTitle.textContent = t('recommended');
+
+            // Кнопки подписки и "смотреть позже" обновляются в renderVideo динамически
+            // Также обновляем текст в recommended элементах (но они генерируются заново при render)
+            // Здесь мы просто перезапускаем renderVideo, если нужно, но проще вызвать обновление через функцию
+            // Так как мы вызываем applyLanguage() после каждого рендера, всё обновится.
+        }
+
+        // ========== Остальной код ==========
         let allVideos = [];
         let currentVideo = null;
         let userSubscriptions = [];
@@ -678,6 +739,12 @@
             const isSubscribed = userSubscriptions.includes(video.channel);
             const isWatchLater = userWatchLater.includes(video.id);
             const isVerified = video.channel_verified || false;
+            const dateAdd = video.date_add || '';
+
+            let dateHtml = '';
+            if (dateAdd) {
+                dateHtml = `<span class="player-channel-date-text">${t('date_add')}: ${dateAdd}</span>`;
+            }
 
             document.getElementById('playerContent').innerHTML = `
                 <div class="player-layout">
@@ -720,15 +787,18 @@
                                     </div>
                                     <div>
                                         <div class="player-channel-name-click" id="playerChannelName">${video.channel || 'Неизвестный канал'}</div>
-                                        <div class="player-channel-subscribers-text" id="playerSubscribers">${formatViews(video.subscribers || 0)} подписчиков</div>
+                                        <div class="player-channel-subscribers-text" id="playerSubscribers">
+                                            ${formatViews(video.subscribers || 0)} ${t('subscribers')}
+                                            ${dateHtml}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="player-actions">
                                     <button id="playerWatchLater" onclick="toggleWatchLater()">
-                                        <i class="fas fa-clock"></i> <span id="watchLaterText">${isWatchLater ? 'В сохранённых' : 'Смотреть позже'}</span>
+                                        <i class="fas fa-clock"></i> <span id="watchLaterText">${isWatchLater ? t('in_saved') : t('watch_later')}</span>
                                     </button>
                                     <button id="playerSubscribe" class="${isSubscribed ? 'subscribed' : ''}" onclick="toggleSubscribe('${video.channel}')">
-                                        <i class="fas ${isSubscribed ? 'fa-check' : 'fa-plus'}"></i> ${isSubscribed ? 'Подписан' : 'Подписаться'}
+                                        <i class="fas ${isSubscribed ? 'fa-check' : 'fa-plus'}"></i> ${isSubscribed ? t('subscribed') : t('subscribe')}
                                     </button>
                                 </div>
                             </div>
@@ -737,7 +807,7 @@
                     </div>
 
                     <div class="player-right">
-                        <div class="recommended-title">Рекомендуемые видео</div>
+                        <div class="recommended-title">${t('recommended')}</div>
                         <div id="recommendedList"></div>
                     </div>
                 </div>
@@ -756,7 +826,7 @@
 
             const list = document.getElementById('recommendedList');
             if (recommended.length === 0) {
-                list.innerHTML = '<div class="empty-state"><h3>Нет рекомендаций</h3></div>';
+                list.innerHTML = `<div class="empty-state"><h3>${t('no_recommendations')}</h3></div>`;
             } else {
                 list.innerHTML = recommended.map(v => `
                     <div class="recommended-item" onclick="openVideo(${v.id})">
@@ -766,12 +836,14 @@
                         <div class="recommended-info">
                             <div class="recommended-title-text">${v.title || 'Без названия'}</div>
                             <div class="recommended-channel">${v.channel || 'OrbitTube'}</div>
-                            <div class="recommended-meta">${formatViews(v.views || 0)} просмотров</div>
+                            <div class="recommended-meta">${formatViews(v.views || 0)} ${t('views')}</div>
                         </div>
                     </div>
                 `).join('');
             }
 
+            // Применяем язык для всех элементов
+            applyLanguage();
             initCustomPlayer();
         }
 
@@ -982,7 +1054,7 @@
             if (btn) {
                 const isSub = userSubscriptions.includes(channelName);
                 btn.className = isSub ? 'subscribed' : '';
-                btn.innerHTML = `<i class="fas ${isSub ? 'fa-check' : 'fa-plus'}"></i> ${isSub ? 'Подписан' : 'Подписаться'}`;
+                btn.innerHTML = `<i class="fas ${isSub ? 'fa-check' : 'fa-plus'}"></i> ${isSub ? t('subscribed') : t('subscribe')}`;
             }
         }
 
@@ -1000,11 +1072,14 @@
             
             const btn = document.getElementById('watchLaterText');
             if (btn) {
-                btn.textContent = userWatchLater.includes(id) ? 'В сохранённых' : 'Смотреть позже';
+                btn.textContent = userWatchLater.includes(id) ? t('in_saved') : t('watch_later');
             }
         }
 
         async function init() {
+            // Загружаем язык
+            currentLang = localStorage.getItem('orbittube_lang') || 'ru';
+            // Применяем тему и фон
             const theme = localStorage.getItem('orbittube_theme') || 'dark';
             const bg = localStorage.getItem('orbittube_bg') || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
