@@ -111,7 +111,7 @@
     {
       "id": 10,
       "title": "СОСЕДСКАЯ МАШИНА | Сериал СУПЕР БАТЯ - 19 Серия",
-      "channel": "LavrenSem",
+      "channel": "LavrenSem (управляется OrbitTube)",
       "description": "",
       "temp_url": "https://github.com/orbittube/Video-OrbitTube/releases/download/v1.0.0/videoplayback.mp4",
       "duration": "08:26",
@@ -124,7 +124,7 @@
     {
       "id": 11,
       "title": "ПОМЕНЯЛИСЬ ТЕЛАМИ | Сериал БРАТИКИ - 204 Серия",
-      "channel": "LavrenSem",
+      "channel": "LavrenSem (управляется OrbitTube)",
       "description": "",
       "temp_url": "https://github.com/orbittube/Video-OrbitTube/releases/download/v1.0.0/204.mp4",
       "duration": "05:55",
