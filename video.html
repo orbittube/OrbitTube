@@ -123,6 +123,7 @@
             overflow: hidden;
             aspect-ratio: 16/9;
             user-select: none;
+            transition: opacity 0.4s ease;
         }
 
         .custom-player video {
@@ -130,6 +131,28 @@
             height: 100%;
             display: block;
             background: #000;
+            transition: opacity 0.4s ease;
+        }
+
+        .custom-player.idle {
+            cursor: none;
+        }
+
+        .custom-player.idle .player-controls,
+        .custom-player.idle .player-title-overlay,
+        .custom-player.idle .center-play-btn,
+        .custom-player.idle .player-loading {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .custom-player.idle .player-loading {
+            display: none;
+        }
+
+        .custom-player.idle .player-title-overlay {
+            transform: translateY(-8px);
         }
 
         .player-title-overlay {
@@ -1009,7 +1032,27 @@
                 fullscreenBtn.querySelector('i').className = `fas ${isFull ? 'fa-compress' : 'fa-expand'}`;
             });
 
-            player.addEventListener('mousemove', showControls);
+            let idleTimer = null;
+
+            function resetIdleTimer() {
+                player.classList.remove('idle');
+                player.style.cursor = '';
+                if (isPlaying) {
+                    player.classList.add('show-controls');
+                }
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(() => {
+                    if (!video.paused) {
+                        player.classList.remove('show-controls');
+                        player.classList.add('idle');
+                    }
+                }, 7000);
+            }
+
+            player.addEventListener('mousemove', (event) => {
+                showControls();
+                resetIdleTimer();
+            });
             player.addEventListener('mouseleave', () => {
                 if (isPlaying) {
                     setTimeout(() => {
@@ -1017,6 +1060,18 @@
                     }, 500);
                 }
             });
+
+            video.addEventListener('play', resetIdleTimer);
+            video.addEventListener('pause', () => {
+                clearTimeout(idleTimer);
+                player.classList.remove('idle');
+            });
+            video.addEventListener('ended', () => {
+                clearTimeout(idleTimer);
+                player.classList.remove('idle');
+            });
+
+            resetIdleTimer();
 
             document.addEventListener('keydown', (e) => {
                 if (e.target.tagName === 'INPUT') return;
