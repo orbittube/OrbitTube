@@ -6,7 +6,6 @@
     <title>🚀 OrbitTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Все стили остаются без изменений (как в предыдущей версии) */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -746,7 +745,7 @@
         <div class="sidebar-item" data-page="trending"><i class="fas fa-fire"></i><span>Тренды</span></div>
         <div class="sidebar-item" data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></div>
         <div class="sidebar-item" data-page="channels"><i class="fas fa-list"></i><span>Все каналы</span></div>
-        <div class="sidebar-item" data-page="new_videos"><i class="fas fa-bolt"></i><span>Новые видео</span></div>
+        <!-- Удалён пункт "Новые видео" -->
         <div class="sidebar-divider"></div>
         <div class="sidebar-item" data-page="library"><i class="fas fa-book"></i><span>Библиотека</span></div>
         <div class="sidebar-item" data-page="watch_later"><i class="fas fa-clock"></i><span>Смотреть позже</span></div>
@@ -828,12 +827,12 @@
         <button class="active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></button>
         <button data-page="channels"><i class="fas fa-list"></i><span>Каналы</span></button>
-        <button data-page="new_videos"><i class="fas fa-bolt"></i><span>Новые видео</span></button>
+        <!-- Удалена кнопка "Новые видео" -->
         <button data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></button>
     </div>
 
     <script>
-        // ========== Языковые ресурсы (без изменений) ==========
+        // ========== Языковые ресурсы ==========
         const LANG = {
             ru: {
                 home: 'Главная',
@@ -842,7 +841,6 @@
                 channels: 'Все каналы',
                 library: 'Библиотека',
                 watch_later: 'Смотреть позже',
-                new_videos: 'Новые видео',
                 settings: 'Настройки',
                 search_placeholder: 'Поиск в OrbitTube',
                 back_home: 'На главную',
@@ -891,7 +889,6 @@
                 channels: 'Всі канали',
                 library: 'Бібліотека',
                 watch_later: 'Дивитись пізніше',
-                new_videos: 'Нові відео',
                 settings: 'Налаштування',
                 search_placeholder: 'Пошук в OrbitTube',
                 back_home: 'На головну',
@@ -940,7 +937,6 @@
                 channels: 'All channels',
                 library: 'Library',
                 watch_later: 'Watch later',
-                new_videos: 'New videos',
                 settings: 'Settings',
                 search_placeholder: 'Search OrbitTube',
                 back_home: 'Back to home',
@@ -1000,7 +996,7 @@
             ? 'http://localhost:8080' 
             : 'https://unruffled-unfrosted-name.ngrok-free.dev';
 
-        // ========== Функции перевода (без изменений) ==========
+        // ========== Функции перевода ==========
         function t(key) {
             const langData = LANG[currentLang] || LANG.ru;
             return langData[key] || key;
@@ -1017,7 +1013,6 @@
                 trending: 'trending',
                 subscriptions: 'subscriptions',
                 channels: 'channels',
-                new_videos: 'new_videos',
                 library: 'library',
                 watch_later: 'watch_later',
                 settings: 'settings'
@@ -1114,10 +1109,8 @@
             }));
         }
 
-        // ===== НОВАЯ ФУНКЦИЯ: извлечение ID видео из URL =====
         function extractVideoId(url) {
             if (!url) return null;
-            // Попробуем найти v= или youtu.be/
             let match = url.match(/[?&]v=([^&]+)/);
             if (match) return match[1];
             match = url.match(/youtu\.be\/([^?]+)/);
@@ -1125,18 +1118,14 @@
             return null;
         }
 
-        // ===== НОВАЯ ФУНКЦИЯ: получение URL превью =====
         function getThumbnailUrl(video) {
-            // Если есть собственное поле thumbnail — используем его
             if (video.thumbnail && video.thumbnail.startsWith('http')) {
                 return video.thumbnail;
             }
-            // Иначе пробуем вытащить ID из original_url
             const id = extractVideoId(video.original_url);
             if (id) {
                 return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
             }
-            // Если ничего не вышло — заглушка (data:image)
             return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90" fill="%23ccc"%3E%3Crect width="160" height="90" /%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23666"%3E🎬%3C/text%3E%3C/svg%3E';
         }
 
@@ -1169,7 +1158,7 @@
             }
         }
 
-        // ========== Перемешивание и дата ==========
+        // ========== Перемешивание ==========
         function shuffleArray(arr) {
             const a = [...arr];
             for (let i = a.length - 1; i > 0; i--) {
@@ -1235,11 +1224,6 @@
                 case 'subscriptions': 
                     videos = shuffleArray(allVideos.filter(v => userSubscriptions.includes(v.channel))); 
                     break;
-                case 'new_videos':
-                    videos = [...allVideos]
-                        .filter(isRecentVideo)
-                        .sort((a, b) => parseDateAdd(b.date_add || b.added || b.added_date) - parseDateAdd(a.date_add || a.added || a.added_date));
-                    break;
                 case 'library': 
                     videos = shuffleArray(allVideos.filter(v => userLiked.includes(v.id) || userWatchLater.includes(v.id))); 
                     break;
@@ -1256,7 +1240,6 @@
             updateBottomNav();
         }
 
-        // ===== Рендеринг с использованием новой функции превью =====
         function renderVideos(videos) {
             const grid = document.getElementById('videoGrid');
             if (!grid) return;
@@ -1269,7 +1252,6 @@
             const cards = videos.map((video, index) => {
                 const isLiked = userLiked.includes(video.id);
                 const isWatchLater = userWatchLater.includes(video.id);
-                // Используем новую функцию получения превью
                 const thumbUrl = getThumbnailUrl(video);
                 const subscribers = video.subscribers || 0;
                 const isVerified = video.channel_verified || false;
@@ -1367,7 +1349,6 @@
             });
         }
 
-        // ===== Рендеринг канала с превью =====
         function renderChannelPage(channelName) {
             const pageContent = document.getElementById('pageContent');
             const videos = allVideos.filter(v => v.channel === channelName);
