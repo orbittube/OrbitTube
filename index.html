@@ -6,6 +6,7 @@
     <title>🚀 OrbitTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили без изменений — такие же, как в предыдущей версии */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -722,6 +723,7 @@
 </head>
 <body>
 
+    <!-- Шапка, сайдбар, футер и т.д. — без изменений -->
     <header class="header">
         <div class="header-left">
             <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
@@ -769,7 +771,6 @@
     <div class="settings-panel" id="settingsPanel">
         <button class="settings-close" id="settingsClose"><i class="fas fa-times"></i></button>
         <h2><i class="fas fa-cog"></i> Настройки</h2>
-
         <div class="settings-group">
             <label>🌐 Язык</label>
             <div class="lang-options">
@@ -778,7 +779,6 @@
                 <button class="lang-btn" data-lang="en">English</button>
             </div>
         </div>
-
         <div class="settings-group">
             <label>🎨 Тема</label>
             <div class="theme-options">
@@ -787,7 +787,6 @@
                 <button class="theme-btn" data-theme="cosmic"><i class="fas fa-rocket"></i>Космос</button>
             </div>
         </div>
-
         <div class="settings-group">
             <label>🎨 Цвет фона</label>
             <div class="bg-options">
@@ -798,7 +797,6 @@
                 <button class="bg-btn" data-bg="purple"><div class="color-preview" style="background:#1a0a2e;"></div>Фиолетовый</button>
             </div>
         </div>
-
         <div class="settings-group">
             <label>📱 Интерфейс</label>
             <div class="settings-row">
@@ -810,7 +808,6 @@
                 <div class="toggle-switch active" id="autoPlayToggle"></div>
             </div>
         </div>
-
         <div class="settings-group" style="border-top:1px solid var(--border-color);padding-top:16px;">
             <label>ℹ️ О проекте</label>
             <p style="color:var(--text-secondary);font-size:13px;line-height:1.6;">
@@ -830,7 +827,7 @@
     </div>
 
     <script>
-        // ========== Языковые ресурсы ==========
+        // ========== Языковые ресурсы (ПОЛНЫЙ ПЕРЕВОД ДЛЯ ВРЕМЕНИ) ==========
         const LANG = {
             ru: {
                 home: 'Главная',
@@ -879,6 +876,21 @@
                 bg_gray: 'Серый',
                 bg_blue: 'Синий',
                 bg_purple: 'Фиолетовый',
+                // ===== КЛЮЧИ ДЛЯ ВРЕМЕНИ =====
+                ago: 'назад',
+                minute: 'минута',
+                minutes: 'минут',
+                hour: 'час',
+                hours: 'часов',
+                day: 'день',
+                days: 'дней',
+                week: 'неделя',
+                weeks: 'недель',
+                month: 'месяц',
+                months: 'месяцев',
+                year: 'год',
+                years: 'лет',
+                just_now: 'только что',
             },
             uk: {
                 home: 'Головна',
@@ -927,6 +939,21 @@
                 bg_gray: 'Сірий',
                 bg_blue: 'Синій',
                 bg_purple: 'Фіолетовий',
+                // ===== КЛЮЧИ ДЛЯ ВРЕМЕНИ =====
+                ago: 'тому',
+                minute: 'хвилина',
+                minutes: 'хвилин',
+                hour: 'година',
+                hours: 'годин',
+                day: 'день',
+                days: 'днів',
+                week: 'тиждень',
+                weeks: 'тижнів',
+                month: 'місяць',
+                months: 'місяців',
+                year: 'рік',
+                years: 'років',
+                just_now: 'щойно',
             },
             en: {
                 home: 'Home',
@@ -975,6 +1002,21 @@
                 bg_gray: 'Gray',
                 bg_blue: 'Blue',
                 bg_purple: 'Purple',
+                // ===== КЛЮЧИ ДЛЯ ВРЕМЕНИ =====
+                ago: 'ago',
+                minute: 'minute',
+                minutes: 'minutes',
+                hour: 'hour',
+                hours: 'hours',
+                day: 'day',
+                days: 'days',
+                week: 'week',
+                weeks: 'weeks',
+                month: 'month',
+                months: 'months',
+                year: 'year',
+                years: 'years',
+                just_now: 'just now',
             }
         };
 
@@ -994,12 +1036,56 @@
             ? 'http://localhost:8080' 
             : 'https://unruffled-unfrosted-name.ngrok-free.dev';
 
-        // ========== Функции перевода ==========
+        // ========== Функция перевода ==========
         function t(key) {
             const langData = LANG[currentLang] || LANG.ru;
             return langData[key] || key;
         }
 
+        // ========== Функция "время назад" (использует все ключи) ==========
+        function timeAgo(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '';
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+                if (diff < 0) return '';
+                if (diff < 60) return t('just_now');
+                const minutes = Math.floor(diff / 60);
+                if (minutes < 60) {
+                    const word = minutes === 1 ? t('minute') : t('minutes');
+                    return `${minutes} ${word} ${t('ago')}`;
+                }
+                const hours = Math.floor(minutes / 60);
+                if (hours < 24) {
+                    const word = hours === 1 ? t('hour') : t('hours');
+                    return `${hours} ${word} ${t('ago')}`;
+                }
+                const days = Math.floor(hours / 24);
+                if (days < 7) {
+                    const word = days === 1 ? t('day') : t('days');
+                    return `${days} ${word} ${t('ago')}`;
+                }
+                if (days < 30) {
+                    const weeks = Math.floor(days / 7);
+                    const word = weeks === 1 ? t('week') : t('weeks');
+                    return `${weeks} ${word} ${t('ago')}`;
+                }
+                if (days < 365) {
+                    const months = Math.floor(days / 30);
+                    const word = months === 1 ? t('month') : t('months');
+                    return `${months} ${word} ${t('ago')}`;
+                }
+                const years = Math.floor(days / 365);
+                const word = years === 1 ? t('year') : t('years');
+                return `${years} ${word} ${t('ago')}`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // ========== Остальные функции (без изменений) ==========
         function applyLanguage() {
             document.title = '🚀 OrbitTube';
             document.querySelector('.logo span').textContent = 'OrbitTube';
@@ -1084,7 +1170,7 @@
             updateBottomNav();
         }
 
-        // ========== Загрузка данных ==========
+        // ========== Загрузка данных (без изменений) ==========
         function loadUserData() {
             const saved = localStorage.getItem('orbittube_user');
             if (saved) {
@@ -1107,7 +1193,6 @@
             }));
         }
 
-        // ===== Функции для превью =====
         function extractVideoId(url) {
             if (!url) return null;
             let match = url.match(/[?&]v=([^&]+)/);
@@ -1157,7 +1242,6 @@
             }
         }
 
-        // ========== Перемешивание ==========
         function shuffleArray(arr) {
             const a = [...arr];
             for (let i = a.length - 1; i > 0; i--) {
@@ -1256,6 +1340,7 @@
                 const isVerified = video.channel_verified || false;
                 const views = video.views || 0;
                 const likes = video.likes || 0;
+                const addedDate = timeAgo(video.added);
                 
                 return `
                     <div class="video-card" onclick="openVideo(${video.id})">
@@ -1279,6 +1364,7 @@
                                     <span>❤️ ${likes}</span>
                                     <span>•</span>
                                     <span>${formatViews(subscribers)} ${t('subscribers')}</span>
+                                    ${addedDate ? `<span>•</span><span>${addedDate}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1348,18 +1434,14 @@
             });
         }
 
-        // ===== ОСНОВНОЕ ИЗМЕНЕНИЕ: сортировка видео на странице канала =====
         function renderChannelPage(channelName) {
             const pageContent = document.getElementById('pageContent');
-            // Получаем все видео канала
             let videos = allVideos.filter(v => v.channel === channelName);
-            
-            // ===== СОРТИРОВКА: новые сверху (по полю added) =====
+            // Сортировка по дате добавления (новые сверху)
             videos.sort((a, b) => {
-                // Если есть поле added (ISO дата) — используем его
                 const dateA = a.added ? new Date(a.added) : new Date(0);
                 const dateB = b.added ? new Date(b.added) : new Date(0);
-                return dateB - dateA; // по убыванию (новые сверху)
+                return dateB - dateA;
             });
 
             const channel = allVideos.find(v => v.channel === channelName);
@@ -1402,6 +1484,7 @@
                 const thumbUrl = getThumbnailUrl(video);
                 const views = video.views || 0;
                 const likes = video.likes || 0;
+                const addedDate = timeAgo(video.added);
                 
                 html += `
                     <div class="video-card" onclick="openVideo(${video.id})">
@@ -1422,6 +1505,7 @@
                                     <span>${formatViews(views)} ${t('views')}</span>
                                     <span>•</span>
                                     <span>❤️ ${likes}</span>
+                                    ${addedDate ? `<span>•</span><span>${addedDate}</span>` : ''}
                                 </div>
                             </div>
                         </div>
