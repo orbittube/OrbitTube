@@ -745,7 +745,6 @@
         <div class="sidebar-item" data-page="trending"><i class="fas fa-fire"></i><span>Тренды</span></div>
         <div class="sidebar-item" data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></div>
         <div class="sidebar-item" data-page="channels"><i class="fas fa-list"></i><span>Все каналы</span></div>
-        <!-- Удалён пункт "Новые видео" -->
         <div class="sidebar-divider"></div>
         <div class="sidebar-item" data-page="library"><i class="fas fa-book"></i><span>Библиотека</span></div>
         <div class="sidebar-item" data-page="watch_later"><i class="fas fa-clock"></i><span>Смотреть позже</span></div>
@@ -827,7 +826,6 @@
         <button class="active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></button>
         <button data-page="channels"><i class="fas fa-list"></i><span>Каналы</span></button>
-        <!-- Удалена кнопка "Новые видео" -->
         <button data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></button>
     </div>
 
@@ -1109,6 +1107,7 @@
             }));
         }
 
+        // ===== Функции для превью =====
         function extractVideoId(url) {
             if (!url) return null;
             let match = url.match(/[?&]v=([^&]+)/);
@@ -1349,9 +1348,20 @@
             });
         }
 
+        // ===== ОСНОВНОЕ ИЗМЕНЕНИЕ: сортировка видео на странице канала =====
         function renderChannelPage(channelName) {
             const pageContent = document.getElementById('pageContent');
-            const videos = allVideos.filter(v => v.channel === channelName);
+            // Получаем все видео канала
+            let videos = allVideos.filter(v => v.channel === channelName);
+            
+            // ===== СОРТИРОВКА: новые сверху (по полю added) =====
+            videos.sort((a, b) => {
+                // Если есть поле added (ISO дата) — используем его
+                const dateA = a.added ? new Date(a.added) : new Date(0);
+                const dateB = b.added ? new Date(b.added) : new Date(0);
+                return dateB - dateA; // по убыванию (новые сверху)
+            });
+
             const channel = allVideos.find(v => v.channel === channelName);
             const isSubscribed = userSubscriptions.includes(channelName);
             const subscribers = channel ? channel.subscribers || 0 : 0;
