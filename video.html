@@ -666,17 +666,33 @@
         }
 
         function applyLanguage() {
-            // Обновляем все элементы с переводами
             const recTitle = document.querySelector('.recommended-title');
             if (recTitle) recTitle.textContent = t('recommended');
-
-            // Кнопки подписки и "смотреть позже" обновляются в renderVideo динамически
-            // Также обновляем текст в recommended элементах (но они генерируются заново при render)
-            // Здесь мы просто перезапускаем renderVideo, если нужно, но проще вызвать обновление через функцию
-            // Так как мы вызываем applyLanguage() после каждого рендера, всё обновится.
+            // обновляем элементы подписки и смотреть позже – они обновляются при рендере
         }
 
-        // ========== Остальной код ==========
+        // ========== Функции для получения превью ==========
+        function extractVideoId(url) {
+            if (!url) return null;
+            let match = url.match(/[?&]v=([^&]+)/);
+            if (match) return match[1];
+            match = url.match(/youtu\.be\/([^?]+)/);
+            if (match) return match[1];
+            return null;
+        }
+
+        function getThumbnailUrl(video) {
+            if (video.thumbnail && video.thumbnail.startsWith('http')) {
+                return video.thumbnail;
+            }
+            const id = extractVideoId(video.original_url);
+            if (id) {
+                return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+            }
+            return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90" fill="%23ccc"%3E%3Crect width="160" height="90" /%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23666"%3E🎬%3C/text%3E%3C/svg%3E';
+        }
+
+        // ========== Основные данные и функции ==========
         let allVideos = [];
         let currentVideo = null;
         let userSubscriptions = [];
@@ -757,6 +773,7 @@
             `;
         }
 
+        // ========== Рендеринг видео ==========
         function renderVideo(video) {
             currentVideo = video;
             const isSubscribed = userSubscriptions.includes(video.channel);
@@ -842,6 +859,7 @@
                 videoEl.load();
             }
 
+            // ===== Рекомендации с превью (используем getThumbnailUrl) =====
             const recommended = allVideos
                 .filter(v => v.id !== video.id)
                 .sort(() => Math.random() - 0.5)
@@ -851,25 +869,29 @@
             if (recommended.length === 0) {
                 list.innerHTML = `<div class="empty-state"><h3>${t('no_recommendations')}</h3></div>`;
             } else {
-                list.innerHTML = recommended.map(v => `
-                    <div class="recommended-item" onclick="openVideo(${v.id})">
-                        <div class="recommended-thumbnail">
-                            <i class="fas fa-play-circle" style="font-size:32px;color:var(--text-muted);"></i>
+                list.innerHTML = recommended.map(v => {
+                    const thumbUrl = getThumbnailUrl(v);
+                    return `
+                        <div class="recommended-item" onclick="openVideo(${v.id})">
+                            <div class="recommended-thumbnail">
+                                <img src="${thumbUrl}" alt="${v.title || 'видео'}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-play-circle\\' style=\\'font-size:32px;color:var(--text-muted);\\'></i>'">
+                            </div>
+                            <div class="recommended-info">
+                                <div class="recommended-title-text">${v.title || 'Без названия'}</div>
+                                <div class="recommended-channel">${v.channel || 'OrbitTube'}</div>
+                                <div class="recommended-meta">${formatViews(v.views || 0)} ${t('views')}</div>
+                            </div>
                         </div>
-                        <div class="recommended-info">
-                            <div class="recommended-title-text">${v.title || 'Без названия'}</div>
-                            <div class="recommended-channel">${v.channel || 'OrbitTube'}</div>
-                            <div class="recommended-meta">${formatViews(v.views || 0)} ${t('views')}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
-            // Применяем язык для всех элементов
+            // Применяем язык
             applyLanguage();
             initCustomPlayer();
         }
 
+        // ========== Инициализация плеера (без изменений) ==========
         function initCustomPlayer() {
             const player = document.getElementById('customPlayer');
             const video = document.getElementById('playerVideo');
@@ -1093,6 +1115,7 @@
             console.log('🎬 Плеер готов!');
         }
 
+        // ========== Взаимодействие ==========
         function openVideo(videoId) {
             window.location.href = `video.html?v=${videoId}`;
         }
@@ -1131,10 +1154,9 @@
             }
         }
 
+        // ========== Загрузка и инициализация ==========
         async function init() {
-            // Загружаем язык
             currentLang = localStorage.getItem('orbittube_lang') || 'ru';
-            // Применяем тему и фон
             const theme = localStorage.getItem('orbittube_theme') || 'dark';
             const bg = localStorage.getItem('orbittube_bg') || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
