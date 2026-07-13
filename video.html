@@ -6,6 +6,7 @@
     <title>🚀 OrbitTube — плеер</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили без изменений (как в вашем файле) */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -621,7 +622,7 @@
     </div>
 
     <script>
-        // ========== Языковые ресурсы (синхронизированы с index.html) ==========
+        // ========== Языковые ресурсы ==========
         const LANG = {
             ru: {
                 subscribers: 'подписчиков',
@@ -668,7 +669,6 @@
         function applyLanguage() {
             const recTitle = document.querySelector('.recommended-title');
             if (recTitle) recTitle.textContent = t('recommended');
-            // обновляем элементы подписки и смотреть позже – они обновляются при рендере
         }
 
         // ========== Функции для получения превью ==========
@@ -859,7 +859,7 @@
                 videoEl.load();
             }
 
-            // ===== Рекомендации с превью (используем getThumbnailUrl) =====
+            // Рекомендации с превью
             const recommended = allVideos
                 .filter(v => v.id !== video.id)
                 .sort(() => Math.random() - 0.5)
@@ -886,12 +886,11 @@
                 }).join('');
             }
 
-            // Применяем язык
             applyLanguage();
             initCustomPlayer();
         }
 
-        // ========== Инициализация плеера (без изменений) ==========
+        // ========== Инициализация плеера (с добавленным кликом по видео) ==========
         function initCustomPlayer() {
             const player = document.getElementById('customPlayer');
             const video = document.getElementById('playerVideo');
@@ -1043,6 +1042,13 @@
             volumeBtn.addEventListener('click', toggleMute);
             volumeSlider.addEventListener('input', updateVolume);
             fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+            // ===== ДОБАВЛЕНО: одиночный клик по видео — переключение паузы =====
+            video.addEventListener('click', function(e) {
+                // Если клик был по самому видео (не по элементам управления), переключаем паузу
+                // Элементы управления перехватывают свои события, поэтому этот обработчик сработает только при клике на видео
+                togglePlay();
+            });
 
             document.addEventListener('fullscreenchange', () => {
                 const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
