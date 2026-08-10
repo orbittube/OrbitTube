@@ -3,7 +3,7 @@
     {
       "idS": "stream_001",
       "channel": "2+1 телеканал",
-      "url_player": "https://player.twitch.tv/?channel=dllux1&parent=localhost&autoplay=false",
+      "url_player": "https://www.twitch.tv/dllux1",
       "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_shroud-440x248.jpg",
       "viewers": 0
     },
