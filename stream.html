@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚀 OrbitTube — Стримы</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ПОДКЛЮЧАЕМ TWITCH SDK -->
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <style>
+        /* ===== ВСЕ СТИЛИ ИЗ INDEX.HTML ===== */
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1a1a1a;
+            --bg-hover: #272727;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --text-muted: #606060;
+            --border-color: #303030;
+            --accent: #00d4ff;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --sidebar-width: 240px;
+            --sidebar-collapsed: 0px;
+            --header-height: 56px;
+            --radius: 12px;
+            --transition: 0.3s ease;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f9f9f9;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #e5e5e5;
+            --text-primary: #0f0f0f;
+            --text-secondary: #606060;
+            --text-muted: #909090;
+            --border-color: #d9d9d9;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        [data-theme="cosmic"] {
+            --bg-primary: #0b0e17;
+            --bg-secondary: #121a26;
+            --bg-card: #121a26;
+            --bg-hover: #1a2636;
+            --text-primary: #e0e6f0;
+            --text-secondary: #7a8a9e;
+            --text-muted: #4a5a6e;
+            --border-color: #1f2a3a;
+            --accent: #00d4ff;
+            --shadow: rgba(0, 0, 0, 0.7);
+        }
+        [data-bg="dark"] { --bg-primary: #0f0f0f; --bg-secondary: #1a1a1a; }
+        [data-bg="darker"] { --bg-primary: #000000; --bg-secondary: #0a0a0a; }
+        [data-bg="gray"] { --bg-primary: #1a1a1a; --bg-secondary: #2a2a2a; }
+        [data-bg="blue"] { --bg-primary: #0a1628; --bg-secondary: #0f2040; }
+        [data-bg="purple"] { --bg-primary: #1a0a2e; --bg-secondary: #2a1040; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background var(--transition), color var(--transition);
+            overflow: hidden;
+            height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            height: var(--header-height);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background var(--transition), border var(--transition);
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-btn:hover { background: var(--bg-hover); }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+        }
+        .logo i { font-size: 20px; }
+        .logo span {
+            background: linear-gradient(135deg, var(--accent), #7b2ffc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-center {
+            flex: 1;
+            max-width: 400px;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .search-box {
+            display: flex;
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .search-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+        .search-box input {
+            flex: 1;
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            min-width: 40px;
+        }
+        .search-box input::placeholder { color: var(--text-muted); font-size: 13px; }
+        .search-box button {
+            background: var(--bg-hover);
+            border: none;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .search-box button:hover { background: var(--border-color); }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .header-right button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header-right button:hover { background: var(--bg-hover); }
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform var(--transition), background var(--transition), border var(--transition);
+            z-index: 999;
+            padding: 8px 0;
+            flex-shrink: 0;
+            transform: translateX(-100%);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border-radius: 0;
+            margin: 1px 0;
+            min-height: 40px;
+            white-space: nowrap;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .sidebar-item.active {
+            background: var(--bg-hover);
+            color: var(--accent);
+            border-left-color: var(--accent);
+            font-weight: 500;
+        }
+        .sidebar-item i { width: 24px; font-size: 18px; text-align: center; flex-shrink: 0; }
+        .sidebar-item span { overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-divider { height: 1px; background: var(--border-color); margin: 8px 12px; }
+        .sidebar-divider-text {
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 8px 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-overlay.active { display: block; }
+        .main-content {
+            margin-left: 0;
+            margin-top: var(--header-height);
+            padding: 12px 12px 80px;
+            height: calc(100vh - var(--header-height));
+            overflow-y: auto;
+            transition: margin-left var(--transition), padding var(--transition);
+            background: var(--bg-primary);
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .video-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background var(--transition);
+            border: 1px solid transparent;
+        }
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow);
+            border-color: var(--border-color);
+        }
+        .video-thumbnail {
+            position: relative;
+            background: var(--bg-hover);
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .video-info {
+            padding: 10px 12px;
+            display: flex;
+            gap: 10px;
+        }
+        .video-channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .video-details { flex: 1; min-width: 0; }
+        .video-title {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 3px;
+        }
+        .video-channel-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .video-channel-name:hover { color: var(--accent); text-decoration: underline; }
+        .video-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 54px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 0 8px;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .bottom-nav.active { display: flex; }
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: color 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 12px;
+        }
+        .bottom-nav button i { font-size: 20px; }
+        .bottom-nav button.active { color: var(--accent); }
+        .bottom-nav button:hover { background: var(--bg-hover); }
+        .footer {
+            text-align: center;
+            padding: 20px 20px 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 24px;
+            clear: both;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .video-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .bottom-nav { display: none !important; }
+            .main-content { padding-bottom: 40px; }
+            .sidebar { transform: translateX(0); width: var(--sidebar-width); }
+            .main-content { margin-left: var(--sidebar-width); padding: 16px 20px 40px; }
+            .sidebar-overlay { display: none !important; }
+        }
+        @media (min-width: 1024px) {
+            .video-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        }
+        @media (min-width: 1400px) {
+            .video-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        }
+        @media (max-width: 767px) {
+            .bottom-nav { display: flex !important; }
+            .main-content { padding-bottom: 80px; }
+            .header-center { max-width: 200px; }
+            .logo { font-size: 16px; }
+            .logo i { font-size: 18px; }
+            .search-box input { font-size: 12px; padding: 4px 8px; }
+            .search-box button { padding: 4px 8px; font-size: 12px; }
+            .header-right button { width: 32px; height: 32px; font-size: 16px; }
+            .menu-btn { font-size: 18px; width: 36px; height: 36px; padding: 6px; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.active { display: block; }
+        }
+        @media (max-width: 480px) {
+            .video-grid { gap: 12px; }
+            .video-title { font-size: 13px; }
+            .video-info { padding: 8px 10px; gap: 8px; }
+            .video-channel-avatar { width: 28px; height: 28px; font-size: 11px; }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            grid-column: 1/-1;
+        }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; color: var(--text-muted); }
+        .empty-state h3 { color: var(--text-primary); margin-bottom: 4px; font-size: 18px; }
+        .empty-state button {
+            margin-top: 16px;
+            background: #FF8C00;
+            border: none;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .empty-state button:hover { transform: scale(1.05); }
+
+        /* ===== МОДАЛЬНОЕ ОКНО ДЛЯ ПЛЕЕРА ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            max-width: 900px;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-header h2 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+        .modal-header h2 .live-badge {
+            background: #FF0000;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            animation: blink 1s infinite;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: var(--bg-hover); }
+        .modal-body {
+            position: relative;
+            background: #000;
+            min-height: 400px;
+        }
+        .modal-body #twitch-embed {
+            width: 100%;
+            height: 500px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <div class="logo" id="logoHome"><i class="fas fa-rocket"></i><span>OrbitTube</span></div>
+        </div>
+        <div class="header-center">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Поиск стримов">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="addStreamBtn" style="background:#FF8C00;color:#fff;border-radius:20px;padding:0 16px;font-weight:600;font-size:13px;width:auto;height:34px;">
+                <i class="fas fa-plus"></i> Добавить
+            </button>
+        </div>
+    </header>
+
+    <!-- ОВЕРЛЕЙ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- САЙДБАР -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-item" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
+        <div class="sidebar-item active" data-page="streams">
+            <i class="fas fa-broadcast"></i>
+            <span>Стримы <span style="color:#FF8C00;font-weight:700;font-size:11px;background:rgba(255,140,0,0.2);padding:1px 6px;border-radius:10px;">BETA</span></span>
+        </div>
+    </nav>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="main-content" id="mainContent">
+        <div id="pageContent">
+            <div class="video-grid" id="streamGrid"></div>
+        </div>
+        <div class="footer">
+            <p>🚀 OrbitTube — стримы без границ</p>
+            <p>📡 Добавить стрим: @OrbitTubeStream</p>
+        </div>
+    </main>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПЛЕЕРА -->
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <span id="modalChannel">🔴 Загрузка...</span>
+                    <span class="live-badge">LIVE</span>
+                </h2>
+                <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="twitch-embed"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+    <div class="bottom-nav" id="bottomNav">
+        <button data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
+        <button class="active" data-page="streams"><i class="fas fa-broadcast"></i><span>Стримы</span></button>
+    </div>
+
+    <script>
+        // ===== ПЕРЕВОДЫ =====
+        const LANG = {
+            ru: {
+                home: 'Главная',
+                streams: 'Стримы',
+                no_streams: 'Стримы не найдены',
+                no_streams_desc: 'Сейчас никто не стримит, но ты можешь добавить свой стрим!',
+                add_stream: 'Добавить стрим',
+                back_home: 'На главную',
+                footer_line1: '🚀 OrbitTube — стримы без границ',
+                footer_line2: '📡 Добавить стрим: @OrbitTubeStream',
+                search_placeholder: 'Поиск стримов',
+                live: 'В прямом эфире',
+                viewers: 'зрителей',
+            },
+            uk: {
+                home: 'Головна',
+                streams: 'Стрими',
+                no_streams: 'Стрими не знайдено',
+                no_streams_desc: 'Зараз ніхто не стримить, але ти можеш додати свій стрим!',
+                add_stream: 'Додати стрим',
+                back_home: 'На головну',
+                footer_line1: '🚀 OrbitTube — стрими без кордонів',
+                footer_line2: '📡 Додати стрим: @OrbitTubeStream',
+                search_placeholder: 'Пошук стримів',
+                live: 'У прямому ефірі',
+                viewers: 'глядачів',
+            },
+            en: {
+                home: 'Home',
+                streams: 'Streams',
+                no_streams: 'No streams found',
+                no_streams_desc: 'No one is streaming right now, but you can add your stream!',
+                add_stream: 'Add stream',
+                back_home: 'Back to home',
+                footer_line1: '🚀 OrbitTube — streams without borders',
+                footer_line2: '📡 Add stream: @OrbitTubeStream',
+                search_placeholder: 'Search streams',
+                live: 'Live now',
+                viewers: 'viewers',
+            }
+        };
+
+        let currentLang = localStorage.getItem('orbittube_lang') || 'ru';
+        let streams = [];
+        let currentTwitchPlayer = null;
+
+        function t(key) {
+            const langData = LANG[currentLang] || LANG.ru;
+            return langData[key] || key;
+        }
+
+        // ===== ЗАГРУЗКА СТРИМОВ =====
+        async function loadStreams() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/orbittube/OrbitTube/refs/heads/main/streamplatform');
+                if (!response.ok) throw new Error('Не удалось загрузить стримы');
+                const data = await response.json();
+                streams = data.streams || [];
+                renderStreams(streams);
+            } catch (e) {
+                console.warn('Ошибка загрузки стримов:', e);
+                streams = [];
+                renderStreams([]);
+            }
+        }
+
+        // ===== ОТОБРАЖЕНИЕ СТРИМОВ =====
+        function renderStreams(streamList) {
+            const grid = document.getElementById('streamGrid');
+            if (!grid) return;
+
+            if (!streamList || streamList.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-broadcast" style="font-size:48px;color:#FF8C00;"></i>
+                        <h3>${t('no_streams')}</h3>
+                        <p>${t('no_streams_desc')}</p>
+                        <button onclick="openBot()">${t('add_stream')}</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = streamList.map(stream => {
+                const isLive = stream.isLive !== undefined ? stream.isLive : true;
+                return `
+                <div class="video-card" onclick="openStream('${stream.idS}')">
+                    <div class="video-thumbnail" style="position:relative;">
+                        ${isLive ? `
+                        <div style="position:absolute;top:8px;left:8px;background:#FF0000;color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;z-index:2;">
+                            <i class="fas fa-circle" style="font-size:10px;margin-right:4px;animation:blink 1s infinite;"></i> LIVE
+                        </div>
+                        ` : `
+                        <div style="position:absolute;top:8px;left:8px;background:#666;color:#fff;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:700;z-index:2;">
+                            <i class="fas fa-circle" style="font-size:10px;margin-right:4px;"></i> OFFLINE
+                        </div>
+                        `}
+                        <img src="${stream.thumbnail || 'https://static-cdn.jtvnw.net/previews-ttv/live_user_default-440x248.jpg'}" 
+                             alt="${stream.channel}" 
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);\\'><i class=\\'fas fa-broadcast\\' style=\\'font-size:48px;\\'></i><span style=\\'margin-top:8px;\\'>${stream.channel}</span></div>'">
+                        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.8);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">
+                            <i class="fas fa-eye"></i> ${stream.viewers || 0}
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-channel-avatar" style="background:#FF8C00;">
+                            ${stream.channel ? stream.channel.charAt(0).toUpperCase() : 'S'}
+                        </div>
+                        <div class="video-details">
+                            <div class="video-title">${stream.title || stream.channel || 'Без названия'}</div>
+                            <div class="video-channel-name" style="${isLive ? 'color:#FF8C00;' : 'color:var(--text-muted);'}">
+                                ${isLive ? '<i class="fas fa-circle" style="font-size:8px;color:#FF0000;"></i>' : '<i class="fas fa-circle" style="font-size:8px;color:#666;"></i>'} 
+                                ${isLive ? t('live') : 'OFFLINE'}
+                            </div>
+                            <div class="video-meta">
+                                <span><i class="fas fa-user"></i> ${stream.channel || 'Unknown'}</span>
+                                <span>•</span>
+                                <span><i class="fas fa-eye"></i> ${stream.viewers || 0} ${t('viewers')}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // ===== ОТКРЫТИЕ СТРИМА ЧЕРЕЗ TWITCH SDK =====
+        function openStream(idS) {
+            const stream = streams.find(s => s.idS === idS);
+            if (!stream || !stream.url_player) {
+                alert('Стрим временно недоступен');
+                return;
+            }
+
+            let channelName = stream.channel;
+            let twitchChannel = null;
+
+            if (stream.url_player.includes('twitch.tv')) {
+                const match = stream.url_player.match(/twitch\.tv\/([a-zA-Z0-9_]+)/);
+                if (match) {
+                    twitchChannel = match[1];
+                } else {
+                    alert('Не удалось определить канал Twitch');
+                    return;
+                }
+            } else {
+                alert('Пока поддерживаются только стримы с Twitch');
+                return;
+            }
+
+            document.getElementById('modalChannel').innerHTML = `🔴 ${channelName} <span class="live-badge">LIVE</span>`;
+            document.getElementById('playerModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                const container = document.getElementById('twitch-embed');
+                container.innerHTML = '';
+
+                if (typeof Twitch !== 'undefined' && Twitch.Embed) {
+                    try {
+                        const host = window.location.hostname || 'localhost';
+
+                        currentTwitchPlayer = new Twitch.Embed("twitch-embed", {
+                            width: '100%',
+                            height: '100%',
+                            channel: twitchChannel,
+                            parent: [host],
+                            autoplay: true,
+                            muted: false,
+                            layout: 'video',
+                            theme: 'dark'
+                        });
+                        console.log('✅ Twitch плеер запущен для канала:', twitchChannel);
+                    } catch (e) {
+                        console.error('Ошибка создания плеера:', e);
+                        container.innerHTML = `
+                            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:500px;color:var(--text-muted);">
+                                <i class="fas fa-exclamation-triangle" style="font-size:48px;color:#FF8C00;"></i>
+                                <h3 style="margin-top:16px;">Не удалось загрузить плеер</h3>
+                                <p>Попробуй открыть стрим напрямую на Twitch</p>
+                                <button onclick="window.open('${stream.url_player}', '_blank')" 
+                                    style="margin-top:12px;background:#9146FF;border:none;color:#fff;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;">
+                                    Открыть на Twitch
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    console.error('Twitch SDK не загружен!');
+                    container.innerHTML = `
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:500px;color:var(--text-muted);">
+                            <i class="fas fa-exclamation-triangle" style="font-size:48px;color:#FF8C00;"></i>
+                            <h3 style="margin-top:16px;">Не удалось загрузить плеер</h3>
+                            <p>Попробуй обновить страницу</p>
+                        </div>
+                    `;
+                }
+            }, 300);
+        }
+
+        // ===== ЗАКРЫТИЕ ПЛЕЕРА =====
+        function closePlayer() {
+            document.getElementById('playerModal').classList.remove('active');
+            document.body.style.overflow = '';
+            
+            if (currentTwitchPlayer) {
+                try {
+                    currentTwitchPlayer.destroy();
+                } catch(e) {}
+                currentTwitchPlayer = null;
+            }
+            document.getElementById('twitch-embed').innerHTML = '';
+        }
+
+        // ===== ОТКРЫТИЕ БОТА =====
+        function openBot() {
+            window.open('https://t.me/OrbitTubeStream', '_blank');
+        }
+
+        // ===== ПОИСК =====
+        function searchStreams() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderStreams(streams);
+                return;
+            }
+            const filtered = streams.filter(s => 
+                s.channel.toLowerCase().includes(query) || 
+                (s.title && s.title.toLowerCase().includes(query))
+            );
+            renderStreams(filtered);
+        }
+
+        // ===== ПЕРЕХОД НА ГЛАВНУЮ =====
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // ===== ПЕРЕКЛЮЧЕНИЕ САЙДБАРА =====
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStreams();
+
+            // Закрытие плеера
+            document.getElementById('closeModal').addEventListener('click', closePlayer);
+            document.getElementById('playerModal').addEventListener('click', function(e) {
+                if (e.target === this) closePlayer();
+            });
+
+            // Кнопка "Добавить"
+            document.getElementById('addStreamBtn').addEventListener('click', openBot);
+
+            // Поиск
+            document.getElementById('searchBtn').addEventListener('click', searchStreams);
+            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') searchStreams();
+            });
+
+            // Навигация
+            document.querySelectorAll('.sidebar-item[data-page]').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.dataset.page === 'home') goHome();
+                });
+            });
+
+            document.querySelectorAll('.bottom-nav button[data-page]').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.dataset.page === 'home') goHome();
+                });
+            });
+
+            // Мобильное меню
+            document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+            // Логотип
+            document.getElementById('logoHome').addEventListener('click', goHome);
+
+            // Обновляем стримы каждые 30 секунд
+            setInterval(loadStreams, 30000);
+
+            console.log('🚀 OrbitTube Streams v1.0 загружен!');
+        });
+    </script>
+</body>
+</html>
