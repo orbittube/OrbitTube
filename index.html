@@ -6,7 +6,7 @@
     <title>🚀 OrbitTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Стили без изменений — те же, что были в последней версии */
+        /* ===== ПОЛНЫЕ СТИЛИ ===== */
         :root {
             --bg-primary: #0f0f0f;
             --bg-secondary: #1a1a1a;
@@ -665,7 +665,7 @@
 </head>
 <body>
 
-    <!-- Шапка, сайдбар, футер, настройки — без изменений (те же, что и ранее) -->
+    <!-- ШАПКА -->
     <header class="header">
         <div class="header-left">
             <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
@@ -682,13 +682,22 @@
         </div>
     </header>
 
+    <!-- ОВЕРЛЕЙ ДЛЯ САЙДБАРА (МОБИЛКА) -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- САЙДБАР -->
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-item active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
         <div class="sidebar-item" data-page="trending"><i class="fas fa-fire"></i><span>Тренды</span></div>
         <div class="sidebar-item" data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></div>
         <div class="sidebar-item" data-page="channels"><i class="fas fa-list"></i><span>Все каналы</span></div>
+        
+        <!-- НОВАЯ ВКЛАДКА СТРИМЫ BETA -->
+        <div class="sidebar-item" data-page="streams" onclick="window.location.href='stream.html'">
+            <i class="fas fa-broadcast"></i>
+            <span>Стримы <span style="color: #FF8C00; font-weight: 700; font-size: 11px; background: rgba(255, 140, 0, 0.2); padding: 1px 6px; border-radius: 10px;">BETA</span></span>
+        </div>
+        
         <div class="sidebar-divider"></div>
         <div class="sidebar-item" data-page="library"><i class="fas fa-book"></i><span>Библиотека</span></div>
         <div class="sidebar-item" data-page="watch_later"><i class="fas fa-clock"></i><span>Смотреть позже</span></div>
@@ -699,6 +708,7 @@
         <div class="sidebar-item" data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></div>
     </nav>
 
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main class="main-content" id="mainContent">
         <button class="back-to-home" id="backToHome" style="display:none;"><i class="fas fa-arrow-left"></i> На главную</button>
         <div id="pageContent">
@@ -710,6 +720,7 @@
         </div>
     </main>
 
+    <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="settings-panel" id="settingsPanel">
         <button class="settings-close" id="settingsClose"><i class="fas fa-times"></i></button>
         <h2><i class="fas fa-cog"></i> Настройки</h2>
@@ -761,21 +772,30 @@
         </div>
     </div>
 
+    <!-- НИЖНЯЯ НАВИГАЦИЯ (МОБИЛКА) -->
     <div class="bottom-nav" id="bottomNav">
         <button class="active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="subscriptions"><i class="fas fa-users"></i><span>Подписки</span></button>
         <button data-page="channels"><i class="fas fa-list"></i><span>Каналы</span></button>
+        
+        <!-- НОВАЯ КНОПКА СТРИМЫ В НИЖНЕЙ НАВИГАЦИИ -->
+        <button data-page="streams" onclick="window.location.href='stream.html'">
+            <i class="fas fa-broadcast"></i>
+            <span>Стримы</span>
+        </button>
+        
         <button data-page="settings"><i class="fas fa-cog"></i><span>Настройки</span></button>
     </div>
 
     <script>
-        // ========== ЯЗЫКОВЫЕ РЕСУРСЫ (с полными переводами) ==========
+        // ========== ЯЗЫКОВЫЕ РЕСУРСЫ ==========
         const LANG = {
             ru: {
                 home: 'Главная',
                 trending: 'Тренды',
                 subscriptions: 'Подписки',
                 channels: 'Все каналы',
+                streams: 'Стримы',
                 library: 'Библиотека',
                 watch_later: 'Смотреть позже',
                 settings: 'Настройки',
@@ -838,6 +858,7 @@
                 trending: 'Тренди',
                 subscriptions: 'Підписки',
                 channels: 'Всі канали',
+                streams: 'Стрими',
                 library: 'Бібліотека',
                 watch_later: 'Дивитись пізніше',
                 settings: 'Налаштування',
@@ -900,6 +921,7 @@
                 trending: 'Trending',
                 subscriptions: 'Subscriptions',
                 channels: 'All channels',
+                streams: 'Streams',
                 library: 'Library',
                 watch_later: 'Watch later',
                 settings: 'Settings',
@@ -1080,8 +1102,6 @@
                 const data = await response.json();
                 allVideos = data.videos || [];
 
-                // Убираем всякую генерацию, оставляем только то, что есть в JSON
-                // Если нет subscribers или views — оставляем 0 или undefined, но для отображения будем использовать 0
                 for (let i = 0; i < allVideos.length; i++) {
                     const v = allVideos[i];
                     if (!v.subscribers) v.subscribers = 0;
@@ -1154,7 +1174,6 @@
             updateBottomNav();
         }
 
-        // ===== ГЛАВНАЯ, ТРЕНДЫ, ПОДПИСКИ, БИБЛИОТЕКА =====
         function renderVideos(videos) {
             const grid = document.getElementById('videoGrid');
             if (!grid) return;
@@ -1218,7 +1237,6 @@
             return num.toString();
         }
 
-        // ===== ВСЕ КАНАЛЫ =====
         function renderAllChannels() {
             const pageContent = document.getElementById('pageContent');
             const channels = [];
@@ -1268,11 +1286,9 @@
             });
         }
 
-        // ===== СТРАНИЦА КАНАЛА (единая дата) =====
         function renderChannelPage(channelName) {
             const pageContent = document.getElementById('pageContent');
             let videos = allVideos.filter(v => v.channel === channelName);
-            // Сортировка по дате добавления (новые сверху)
             videos.sort((a, b) => {
                 const dateA = getVideoDate(a) ? new Date(getVideoDate(a)) : new Date(0);
                 const dateB = getVideoDate(b) ? new Date(getVideoDate(b)) : new Date(0);
@@ -1356,7 +1372,6 @@
             });
         }
 
-        // ========== ВСЕ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (без изменений) ==========
         function openChannel(channelName) {
             if (!channelName) return;
             currentChannel = channelName;
@@ -1490,6 +1505,7 @@
                 trending: 'trending',
                 subscriptions: 'subscriptions',
                 channels: 'channels',
+                streams: 'streams',
                 library: 'library',
                 watch_later: 'watch_later',
                 settings: 'settings'
@@ -1498,7 +1514,13 @@
                 const page = el.dataset.page;
                 if (pageMap[page]) {
                     const span = el.querySelector('span');
-                    if (span) span.textContent = t(pageMap[page]);
+                    if (span) {
+                        if (page === 'streams') {
+                            span.innerHTML = `${t(pageMap[page])} <span style="color: #FF8C00; font-weight: 700; font-size: 11px; background: rgba(255, 140, 0, 0.2); padding: 1px 6px; border-radius: 10px;">BETA</span>`;
+                        } else {
+                            span.textContent = t(pageMap[page]);
+                        }
+                    }
                 }
             });
             const subDivider = document.querySelector('.sidebar-divider-text');
@@ -1596,6 +1618,7 @@
                 item.addEventListener('click', function() {
                     const page = this.dataset.page;
                     if (page === 'settings') { openSettings(); closeSidebar(); return; }
+                    if (page === 'streams') { window.location.href = 'stream.html'; return; }
                     closeSidebar();
                     document.getElementById('searchInput').value = '';
                     currentChannel = null;
