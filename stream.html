@@ -458,7 +458,7 @@
             </div>
         </div>
         <div class="header-right">
-            <button id="addStreamBtn" style="background:#FF8C00;color:#fff;border-radius:20px;padding:0 16px;font-weight:600;font-size:13px;width:auto;height:34px;">
+            <button id="addStreamBtn" style="background:#FF8C00;color:#fff;border-radius:20px;padding:0 16px;font-weight:600;font-size:13px;width:auto;height:34px;cursor:pointer;border:none;">
                 <i class="fas fa-plus"></i> Добавить
             </button>
         </div>
@@ -575,7 +575,6 @@
             }
 
             grid.innerHTML = streamList.map(stream => {
-                // Проверяем реальное значение isLive (по умолчанию true)
                 const isLive = stream.isLive !== false;
                 
                 return `
@@ -637,13 +636,11 @@
 
             const isLive = stream.isLive !== false;
 
-            // Обновляем метаданные стрима
             document.getElementById('currentChannel').textContent = stream.channel || 'Канал';
             document.getElementById('currentTitle').textContent = stream.title || 'Без названия';
             document.getElementById('currentAvatar').textContent = (stream.channel || 'S').charAt(0).toUpperCase();
             document.getElementById('currentViewers').innerHTML = `<i class="fas fa-eye"></i> ${stream.viewers || 0}`;
 
-            // Настраиваем статус-бейдж LIVE / OFFLINE
             const badge = document.getElementById('currentBadge');
             if (badge) {
                 if (isLive) {
@@ -657,12 +654,10 @@
                 }
             }
 
-            // Переключаем блоки интерфейса
             document.getElementById('pageContent').style.display = 'none';
             document.getElementById('streamPlayerContainer').classList.add('active');
             document.getElementById('mainContent').scrollTop = 0;
 
-            // Инициализация Плеера через прямой iframe для избежания ошибок
             const host = window.location.hostname || 'localhost';
             const container = document.getElementById('twitch-embed');
             
@@ -684,9 +679,9 @@
             document.getElementById('pageContent').style.display = 'block';
         }
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+        // ===== ПЕРЕХОД К БОТУ =====
         function openBot() {
-            window.open('https://t.me/OrbitTubeStream', '_blank');
+            window.open('https://t.me/OrbitTubeStream_bot', '_blank');
         }
 
         function searchStreams() {
